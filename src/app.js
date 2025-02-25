@@ -4,14 +4,15 @@ const app = express();
 const bodyParser = require('body-parser');
 const Bd = require('./BaseDatos/ConexionBaseDatos');
 const EmpresaRuta = require('./Rutas/EmpresaRuta');
-const ModelosRuta = require("./Local/ModelosTypescript");
+const ModelosTypescriptRuta = require("./Rutas/ModelosTypescriptRuta");
+const Ruter = 'api';
+const FuncionIntermediaJson = require('./FuncionIntermedia/JsonFuncionIntermedia');
+const CuerpoUrlCodificadoFuncionIntermedia = require('./FuncionIntermedia/CuerpoUrlCodificadoFuncionIntermedia');
 
-app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-//Rutas
-app.use('/api', EmpresaRuta);
+app.use(FuncionIntermediaJson);
+app.use(CuerpoUrlCodificadoFuncionIntermedia);
 
-app.use("/api", ModelosRuta);
+app.use(`/${Ruter}`, EmpresaRuta);
+app.use(`/${Ruter}`, ModelosTypescriptRuta);
 
 module.exports = app;
