@@ -1,4 +1,4 @@
-const fs = require("fs");
+const Fs = require("fs");
 const Ruta = require("path");
 const ConexionBaseDatos = require("../BaseDatos/ConexionBaseDatos");
 const Sequelize = require("sequelize");
@@ -9,7 +9,7 @@ const GenerarModelos = async () => {
   try {
     let ModelosTS = {};
 
-    fs.readdirSync(RutaModelos).forEach((archivo) => {
+    Fs.readdirSync(RutaModelos).forEach((archivo) => {
       if (archivo.endsWith(".js")) {
         const RutaModelo = Ruta.join(RutaModelos, archivo);
         const DefinicionModelo = require(RutaModelo);

@@ -1,0 +1,32 @@
+const Jwt = require("jsonwebtoken");
+const Bcrypt = require("bcryptjs");
+require("dotenv").config();
+
+const GenerarToken = (datos) => {
+  return Jwt.sign(
+    {
+      CodigoUsuario: datos.CodigoUsuario,
+      CodigoRol: datos.CodigoRol,
+      NombreUsuario: datos.NombreUsuario,
+      NombreRol: datos.NombreRol
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRES_IN }
+  );
+};
+
+const VerificarToken = (token) => {
+  return Jwt.verify(token, process.env.JWT_SECRET);
+};
+
+const EncriptarClave = async (clave) => {
+  const Salt = await Bcrypt.genSalt(10);
+  const Hash = await Bcrypt.hash(clave, Salt);
+  return { Salt, Hash };
+};
+
+const CompararClaves = async (clave, hash) => {
+  return await Bcrypt.compare(clave, hash);
+};
+
+module.exports = { GenerarToken, VerificarToken, EncriptarClave, CompararClaves };

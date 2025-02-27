@@ -1,7 +1,7 @@
 const Express = require('express');
 const Router = Express.Router();
-const Modelo = 'empresa';
-const { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar } = require('../Controladores/EmpresaControlador');
+const Modelo = 'usuario';
+const { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar } = require('../Controladores/UsuarioControlador');
 
 Router.get(`/${Modelo}/listado`, Listado);
 Router.get(`/${Modelo}/:codigo`, ObtenerPorCodigo);

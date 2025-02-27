@@ -1,18 +1,22 @@
-const express = require('express');
+const Express = require('express');
 require('dotenv').config();
-const app = express();
-const bodyParser = require('body-parser');
-const Bd = require('./BaseDatos/ConexionBaseDatos');
+const App = Express();
 const EmpresaRuta = require('./Rutas/EmpresaRuta');
 const ModelosTypescriptRuta = require("./Rutas/ModelosTypescriptRuta");
 const Ruter = 'api';
-const FuncionIntermediaJson = require('./FuncionIntermedia/JsonFuncionIntermedia');
-const CuerpoUrlCodificadoFuncionIntermedia = require('./FuncionIntermedia/CuerpoUrlCodificadoFuncionIntermedia');
+const CuerpoJson = require('./FuncionIntermedia/CuerpoJson');
+const CuerpoUrlCodificado = require('./FuncionIntermedia/CuerpoUrlCodificado');
+const SubirImagenRuta = require("./Rutas/SubirImagenRuta");
+const UsuarioRuta = require("./Rutas/UsuarioRuta");
+const Login = require("./Rutas/LoginRuta");
 
-app.use(FuncionIntermediaJson);
-app.use(CuerpoUrlCodificadoFuncionIntermedia);
+App.use(CuerpoJson);
+App.use(CuerpoUrlCodificado);
 
-app.use(`/${Ruter}`, EmpresaRuta);
-app.use(`/${Ruter}`, ModelosTypescriptRuta);
+App.use(`/${Ruter}`, EmpresaRuta);
+App.use(`/${Ruter}`, UsuarioRuta);
+App.use(`/${Ruter}`, ModelosTypescriptRuta);
+App.use(`/${Ruter}`, SubirImagenRuta);
+App.use(`/${Ruter}`, Login);
 
-module.exports = app;
+module.exports = App;

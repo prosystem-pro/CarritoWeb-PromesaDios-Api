@@ -1,9 +1,10 @@
 const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
-const Modelo = require('../Modelos/Empresa')(BaseDatos, Sequelize.DataTypes);
+const Modelo = require('../Modelos/Usuario')(BaseDatos, Sequelize.DataTypes);
+const { EncriptarClave } = require('../Configuracion/AutorizacionConfiguracion');
 
-const NombreModelo= 'NombreEmpresa';
-const CodigoModelo= 'CodigoEmpresa'
+const NombreModelo= 'NombreUsuario';
+const CodigoModelo= 'CodigoUsuario'
 
 const Listado = async () => {
   return await Modelo.findAll({ where: { Estatus: 1 } });
@@ -27,14 +28,41 @@ const Buscar = async (tipoBusqueda, valorBusqueda) => {
 };
 
 const Crear = async (datos) => {
-  return await Modelo.create(datos);
+  try {
+    if (!datos.Clave) {
+      throw new Error("La clave es obligatoria");
+    }
+
+    const { Salt, Hash } = await EncriptarClave(datos.Clave);
+
+    datos.ClaveHash = Hash;
+    datos.ClaveSalt = Salt;
+    delete datos.Clave; 
+
+    return await Modelo.create(datos);
+  } catch (error) {
+    throw error;
+  }
 };
 
 const Editar = async (codigo, datos) => {
-  const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: codigo } });
-  if (!Objeto) return null;
-  await Objeto.update(datos);
-  return Objeto;
+  try {
+    const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: codigo } });
+    if (!Objeto) return null;
+
+    if (datos.Clave) {
+      if (datos.Clave.trim() !== "") {
+        const { Salt, Hash } = await EncriptarClave(datos.Clave);
+        datos.ClaveHash = Hash;
+        datos.ClaveSalt = Salt;
+      }
+      delete datos.Clave;
+    }
+    await Objeto.update(datos);
+    return Objeto;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const Eliminar = async (codigo) => {
