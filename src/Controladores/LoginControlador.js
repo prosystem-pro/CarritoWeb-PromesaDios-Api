@@ -8,10 +8,8 @@ const IniciarSesion = async (req, res) => {
       return res.status(400).json({ error: "Nombre de usuario y contraseña son requeridos" });
     }
 
-    // Llamar al servicio de iniciar sesión
-    const resultado = await IniciarSesionServicio(NombreUsuario, Clave);
-
-    res.json(resultado);
+    const Resultado = await IniciarSesionServicio(NombreUsuario, Clave);
+    res.json(Resultado);
   } catch (error) {
     console.error("Error en iniciar sesión:", error);
     res.status(401).json({ error: error.message || "Error en el servidor" });

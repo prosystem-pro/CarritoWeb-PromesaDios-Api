@@ -1,7 +1,7 @@
-const express = require("express");
-const router = express.Router();
+const Express = require("express");
+const Router = Express.Router();
 const { IniciarSesion } = require("../Controladores/LoginControlador");
 
-router.post("/login", IniciarSesion);
+Router.post("/login", IniciarSesion);
 
-module.exports = router;
+module.exports = Router;

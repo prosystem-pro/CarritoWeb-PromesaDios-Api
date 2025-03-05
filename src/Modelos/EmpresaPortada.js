@@ -5,15 +5,15 @@ module.exports = function(sequelize, DataTypes) {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
+      primaryKey: true
+    },
+    CodigoEmpresa: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
       references: {
         model: 'Empresa',
         key: 'CodigoEmpresa'
       }
-    },
-    CodigoEmpresa: {
-      type: DataTypes.INTEGER,
-      allowNull: true
     },
     ColorNombreEmpresa: {
       type: DataTypes.STRING(32),
@@ -25,7 +25,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     UrlImagenPortada: {
       type: DataTypes.STRING(256),
-      allowNull: false
+      allowNull: true
     },
     UrlImagenPortadaIzquierdo: {
       type: DataTypes.STRING(256),
@@ -37,67 +37,67 @@ module.exports = function(sequelize, DataTypes) {
     },
     TitutloQuienesSomos: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorTituloQuienesSomos: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     DescripcionQuienesSomos: {
       type: DataTypes.STRING(1024),
-      allowNull: false
+      allowNull: true
     },
     ColorDescripcionQuienesSomos: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     TituloMision: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorTituloMision: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     DescripcionMision: {
       type: DataTypes.STRING(1024),
-      allowNull: false
+      allowNull: true
     },
     ColorDescripcionMision: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     UrlImagenMision: {
       type: DataTypes.STRING(256),
-      allowNull: false
+      allowNull: true
     },
     TituloVision: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorTituloVision: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     DescripcionVision: {
       type: DataTypes.STRING(1024),
-      allowNull: false
+      allowNull: true
     },
     ColordescripcionVision: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
-    UrlImagenvision: {
+    UrlImagenVision: {
       type: DataTypes.STRING(256),
-      allowNull: false
+      allowNull: true
     },
     ColorEslogan: {
       type: DataTypes.STRING(64),
-      allowNull: false
+      allowNull: true
     },
     Urlvideo: {
       type: DataTypes.STRING(128),
-      allowNull: false
+      allowNull: true
     }
   }, {
     sequelize,

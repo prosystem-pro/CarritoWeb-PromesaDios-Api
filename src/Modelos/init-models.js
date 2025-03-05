@@ -94,8 +94,8 @@ function initModels(sequelize) {
   Empresa.hasMany(AlertaEstilo, { as: "AlertaEstilos", foreignKey: "CodigoEmpresa"});
   ContactanosPortada.belongsTo(Empresa, { as: "CodigoEmpresa_Empresa", foreignKey: "CodigoEmpresa"});
   Empresa.hasMany(ContactanosPortada, { as: "ContactanosPortadas", foreignKey: "CodigoEmpresa"});
-  EmpresaPortada.belongsTo(Empresa, { as: "CodigoEmpresaPortada_Empresa", foreignKey: "CodigoEmpresaPortada"});
-  Empresa.hasOne(EmpresaPortada, { as: "EmpresaPortada", foreignKey: "CodigoEmpresaPortada"});
+  EmpresaPortada.belongsTo(Empresa, { as: "CodigoEmpresa_Empresa", foreignKey: "CodigoEmpresa"});
+  Empresa.hasMany(EmpresaPortada, { as: "EmpresaPortadas", foreignKey: "CodigoEmpresa"});
   Footer.belongsTo(Empresa, { as: "CodigoEmpresa_Empresa", foreignKey: "CodigoEmpresa"});
   Empresa.hasMany(Footer, { as: "Footers", foreignKey: "CodigoEmpresa"});
   MenuPortada.belongsTo(Empresa, { as: "CodigoEmpresa_Empresa", foreignKey: "CodigoEmpresa"});

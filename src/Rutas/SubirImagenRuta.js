@@ -1,10 +1,8 @@
 const { Router } = require("express");
 const { SubirImagen } = require("../Controladores/SubirImagenControlador");
-const Multer = require("multer");
-
-const Cargar = Multer({ storage: Multer.memoryStorage() }).single("Imagen");
+const { Subir } = require("../FuncionIntermedia/SubirImagen");
 
 const RutaAlmacenamiento = Router();
-RutaAlmacenamiento.post("/subir-imagen", Cargar, SubirImagen);
+RutaAlmacenamiento.post("/subir-imagen", Subir.single("Imagen"), SubirImagen);
 
 module.exports = RutaAlmacenamiento;

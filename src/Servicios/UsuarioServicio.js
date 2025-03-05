@@ -3,8 +3,8 @@ const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/Usuario')(BaseDatos, Sequelize.DataTypes);
 const { EncriptarClave } = require('../Configuracion/AutorizacionConfiguracion');
 
-const NombreModelo= 'NombreUsuario';
-const CodigoModelo= 'CodigoUsuario'
+const NombreModelo = 'NombreUsuario';
+const CodigoModelo = 'CodigoUsuario';
 
 const Listado = async () => {
   return await Modelo.findAll({ where: { Estatus: 1 } });
@@ -32,13 +32,10 @@ const Crear = async (datos) => {
     if (!datos.Clave) {
       throw new Error("La clave es obligatoria");
     }
-
     const { Salt, Hash } = await EncriptarClave(datos.Clave);
-
     datos.ClaveHash = Hash;
     datos.ClaveSalt = Salt;
-    delete datos.Clave; 
-
+    delete datos.Clave;
     return await Modelo.create(datos);
   } catch (error) {
     throw error;
@@ -49,13 +46,10 @@ const Editar = async (codigo, datos) => {
   try {
     const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: codigo } });
     if (!Objeto) return null;
-
-    if (datos.Clave) {
-      if (datos.Clave.trim() !== "") {
-        const { Salt, Hash } = await EncriptarClave(datos.Clave);
-        datos.ClaveHash = Hash;
-        datos.ClaveSalt = Salt;
-      }
+    if (datos.Clave && datos.Clave.trim() !== "") {
+      const { Salt, Hash } = await EncriptarClave(datos.Clave);
+      datos.ClaveHash = Hash;
+      datos.ClaveSalt = Salt;
       delete datos.Clave;
     }
     await Objeto.update(datos);

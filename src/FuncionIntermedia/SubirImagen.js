@@ -1,6 +1,6 @@
-const ControladorArchivos = require("multer");
+const Multer = require("multer");
+		
+const Almacenamiento = Multer.memoryStorage();
+const Subir = Multer({ storage: Almacenamiento });
 
-const Almacenamiento = ControladorArchivos.memoryStorage();
-const SubirImagen = ControladorArchivos({ storage: Almacenamiento });
-
-module.exports = SubirImagen;
+module.exports = { Subir };

@@ -1,9 +1,13 @@
 const { Almacenamiento } = require("../Configuracion/FirebaseConfiguracion");
 const { v4: GenerarUuid } = require("uuid");
 
-const SubirImagenAAlmacenamiento = (Archivo) => {
+const SubirImagenAlmacenamiento = (Archivo, CarpetaPrincipal, SubCarpeta) => {
   return new Promise((Resolver, Rechazar) => {
-    const NombreArchivo = `Imagenes/${GenerarUuid()}-${Archivo.originalname}`;
+    if (!CarpetaPrincipal || !SubCarpeta) {
+      return Rechazar(new Error("No se enviaron las carpetas necesarias"));
+    }
+
+    const NombreArchivo = `${CarpetaPrincipal}/${SubCarpeta}/${GenerarUuid()}-${Archivo.originalname}`;
     const ArchivoSubido = Almacenamiento.file(NombreArchivo);
 
     const Flujo = ArchivoSubido.createWriteStream({
@@ -11,7 +15,6 @@ const SubirImagenAAlmacenamiento = (Archivo) => {
     });
 
     Flujo.on("error", (Error) => {
-      console.error(Error);
       Rechazar(new Error("Error al subir la imagen"));
     });
 
@@ -25,4 +28,4 @@ const SubirImagenAAlmacenamiento = (Archivo) => {
   });
 };
 
-module.exports = { SubirImagenAAlmacenamiento };
+module.exports = { SubirImagenAlmacenamiento };
