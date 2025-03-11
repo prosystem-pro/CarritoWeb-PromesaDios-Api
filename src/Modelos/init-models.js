@@ -13,7 +13,7 @@ var _Icono = require("./Icono");
 var _Logo = require("./Logo");
 var _LogoImagen = require("./LogoImagen");
 var _MenuPortada = require("./MenuPortada");
-var _Nabvar = require("./Nabvar");
+var _Navbar = require("./Navbar");
 var _Otro = require("./Otro");
 var _Permiso = require("./Permiso");
 var _PermisoRol = require("./PermisoRol");
@@ -47,7 +47,7 @@ function initModels(sequelize) {
   var Logo = _Logo(sequelize, DataTypes);
   var LogoImagen = _LogoImagen(sequelize, DataTypes);
   var MenuPortada = _MenuPortada(sequelize, DataTypes);
-  var Nabvar = _Nabvar(sequelize, DataTypes);
+  var Navbar = _Navbar(sequelize, DataTypes);
   var Otro = _Otro(sequelize, DataTypes);
   var Permiso = _Permiso(sequelize, DataTypes);
   var PermisoRol = _PermisoRol(sequelize, DataTypes);
@@ -100,8 +100,8 @@ function initModels(sequelize) {
   Empresa.hasMany(Footer, { as: "Footers", foreignKey: "CodigoEmpresa"});
   MenuPortada.belongsTo(Empresa, { as: "CodigoEmpresa_Empresa", foreignKey: "CodigoEmpresa"});
   Empresa.hasMany(MenuPortada, { as: "MenuPortadas", foreignKey: "CodigoEmpresa"});
-  Nabvar.belongsTo(Empresa, { as: "CodigoEmpresa_Empresa", foreignKey: "CodigoEmpresa"});
-  Empresa.hasMany(Nabvar, { as: "Nabvars", foreignKey: "CodigoEmpresa"});
+  Navbar.belongsTo(Empresa, { as: "CodigoEmpresa_Empresa", foreignKey: "CodigoEmpresa"});
+  Empresa.hasMany(Navbar, { as: "Navbars", foreignKey: "CodigoEmpresa"});
   PortadaOtro.belongsTo(Empresa, { as: "CodigoEmpresa_Empresa", foreignKey: "CodigoEmpresa"});
   Empresa.hasMany(PortadaOtro, { as: "PortadaOtros", foreignKey: "CodigoEmpresa"});
   ProductoPortada.belongsTo(Empresa, { as: "CodigoEmpresa_Empresa", foreignKey: "CodigoEmpresa"});
@@ -148,7 +148,7 @@ function initModels(sequelize) {
     Logo,
     LogoImagen,
     MenuPortada,
-    Nabvar,
+    Navbar,
     Otro,
     Permiso,
     PermisoRol,

@@ -98,6 +98,10 @@ module.exports = function(sequelize, DataTypes) {
     Urlvideo: {
       type: DataTypes.STRING(128),
       allowNull: true
+    },
+    Estatus: {
+      type: DataTypes.TINYINT,
+      allowNull: true
     }
   }, {
     sequelize,
