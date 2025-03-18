@@ -12,6 +12,11 @@ const VerificarToken = (req, res, next) => {
   try {
     const Decodificado = Jwt.verify(Token.replace("Bearer ", ""), process.env.JWT_SECRET);
     req.Datos = Decodificado;
+
+    if (Decodificado.SuperAdmin === 1) {
+      return next();
+    }
+
     next();
   } catch (error) {
     ManejarError(error, res, 'Token inválido');

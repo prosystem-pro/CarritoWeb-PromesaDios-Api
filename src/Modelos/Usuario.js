@@ -37,6 +37,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(256),
       allowNull: false
     },
+    SuperAdmin: {
+      type: DataTypes.TINYINT,
+      allowNull: true
+    },
     Estatus: {
       type: DataTypes.TINYINT,
       allowNull: false

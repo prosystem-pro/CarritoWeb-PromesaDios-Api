@@ -17,9 +17,11 @@ var _Navbar = require("./Navbar");
 var _Otro = require("./Otro");
 var _Permiso = require("./Permiso");
 var _PermisoRol = require("./PermisoRol");
+var _PermisoRolRecurso = require("./PermisoRolRecurso");
 var _PortadaOtro = require("./PortadaOtro");
 var _Producto = require("./Producto");
 var _ProductoPortada = require("./ProductoPortada");
+var _Recurso = require("./Recurso");
 var _RedSocial = require("./RedSocial");
 var _RedSocialImagen = require("./RedSocialImagen");
 var _ReporteProducto = require("./ReporteProducto");
@@ -51,9 +53,11 @@ function initModels(sequelize) {
   var Otro = _Otro(sequelize, DataTypes);
   var Permiso = _Permiso(sequelize, DataTypes);
   var PermisoRol = _PermisoRol(sequelize, DataTypes);
+  var PermisoRolRecurso = _PermisoRolRecurso(sequelize, DataTypes);
   var PortadaOtro = _PortadaOtro(sequelize, DataTypes);
   var Producto = _Producto(sequelize, DataTypes);
   var ProductoPortada = _ProductoPortada(sequelize, DataTypes);
+  var Recurso = _Recurso(sequelize, DataTypes);
   var RedSocial = _RedSocial(sequelize, DataTypes);
   var RedSocialImagen = _RedSocialImagen(sequelize, DataTypes);
   var ReporteProducto = _ReporteProducto(sequelize, DataTypes);
@@ -114,8 +118,14 @@ function initModels(sequelize) {
   Empresa.hasMany(ReporteVistaPortada, { as: "ReporteVistaPortadas", foreignKey: "CodigoEmpresa"});
   PermisoRol.belongsTo(Permiso, { as: "CodigoPermiso_Permiso", foreignKey: "CodigoPermiso"});
   Permiso.hasMany(PermisoRol, { as: "PermisoRols", foreignKey: "CodigoPermiso"});
+  PermisoRolRecurso.belongsTo(Permiso, { as: "CodigoPermiso_Permiso", foreignKey: "CodigoPermiso"});
+  Permiso.hasMany(PermisoRolRecurso, { as: "PermisoRolRecursos", foreignKey: "CodigoPermiso"});
+  PermisoRolRecurso.belongsTo(Recurso, { as: "CodigoRecurso_Recurso", foreignKey: "CodigoRecurso"});
+  Recurso.hasMany(PermisoRolRecurso, { as: "PermisoRolRecursos", foreignKey: "CodigoRecurso"});
   PermisoRol.belongsTo(Rol, { as: "CodigoRol_Rol", foreignKey: "CodigoRol"});
   Rol.hasMany(PermisoRol, { as: "PermisoRols", foreignKey: "CodigoRol"});
+  PermisoRolRecurso.belongsTo(Rol, { as: "CodigoRol_Rol", foreignKey: "CodigoRol"});
+  Rol.hasMany(PermisoRolRecurso, { as: "PermisoRolRecursos", foreignKey: "CodigoRol"});
   Usuario.belongsTo(Rol, { as: "CodigoRol_Rol", foreignKey: "CodigoRol"});
   Rol.hasMany(Usuario, { as: "Usuarios", foreignKey: "CodigoRol"});
   CarruselImagen.belongsTo(Carrusel, { as: "CodigoCarrusel_Carrusel", foreignKey: "CodigoCarrusel"});
@@ -152,9 +162,11 @@ function initModels(sequelize) {
     Otro,
     Permiso,
     PermisoRol,
+    PermisoRolRecurso,
     PortadaOtro,
     Producto,
     ProductoPortada,
+    Recurso,
     RedSocial,
     RedSocialImagen,
     ReporteProducto,
