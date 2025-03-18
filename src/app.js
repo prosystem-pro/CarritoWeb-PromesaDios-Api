@@ -16,6 +16,7 @@ App.use(ConfiguracionCors());
 App.use(CuerpoJson);
 App.use(CuerpoUrlCodificado);
 
+
 App.use(`/${Ruter}`, EmpresaRuta);
 App.use(`/${Ruter}`, EmpresaPortadaRuta);
 App.use(`/${Ruter}`, UsuarioRuta);
