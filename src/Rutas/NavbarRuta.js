@@ -1,10 +1,10 @@
 const Express = require('express');
 const Router = Express.Router();
-const Modelo = 'usuario';
-const Tabla = 'Usuario'
+const Modelo = 'navbar';
+const Tabla = 'Navbar'
+const { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar } = require('../Controladores/NavbarControlador');
 const VerificarToken = require('../FuncionIntermedia/VerificarToken');
 const VerificarPermisos = require('../FuncionIntermedia/VerificarPermisos'); 
-const { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar } = require('../Controladores/UsuarioControlador');
 
 Router.get(`/${Modelo}/listado`,VerificarToken,VerificarPermisos('Listar',Tabla), Listado);
 Router.get(`/${Modelo}/:Codigo`,VerificarToken,VerificarPermisos('Ver',Tabla), ObtenerPorCodigo);

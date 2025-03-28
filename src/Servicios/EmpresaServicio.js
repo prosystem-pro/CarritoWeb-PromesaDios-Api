@@ -9,15 +9,15 @@ const Listado = async () => {
   return await Modelo.findAll({ where: { Estatus: 1 } });
 };
 
-const ObtenerPorCodigo = async (codigo) => {
-  return await Modelo.findOne({ where: { [CodigoModelo]: codigo } });
+const ObtenerPorCodigo = async (Codigo) => {
+  return await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
 };
 
-const Buscar = async (tipoBusqueda, valorBusqueda) => {
-  switch (parseInt(tipoBusqueda)) {
+const Buscar = async (TipoBusqueda, ValorBusqueda) => {
+  switch (parseInt(TipoBusqueda)) {
     case 1:
       return await Modelo.findAll({
-        where: { [NombreModelo]: { [Sequelize.Op.like]: `%${valorBusqueda}%` }, Estatus: 1 }
+        where: { [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` }, Estatus: 1 }
       });
     case 2:
       return await Modelo.findAll({ where: { Estatus: 1 }, order: [[NombreModelo, 'ASC']] });
@@ -26,19 +26,19 @@ const Buscar = async (tipoBusqueda, valorBusqueda) => {
   }
 };
 
-const Crear = async (datos) => {
-  return await Modelo.create(datos);
+const Crear = async (Datos) => {
+  return await Modelo.create(Datos);
 };
 
-const Editar = async (codigo, datos) => {
-  const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: codigo } });
+const Editar = async (Codigo, Datos) => {
+  const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
   if (!Objeto) return null;
-  await Objeto.update(datos);
+  await Objeto.update(Datos);
   return Objeto;
 };
 
-const Eliminar = async (codigo) => {
-  const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: codigo } });
+const Eliminar = async (Codigo) => {
+  const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
   if (!Objeto) return null;
   await Objeto.destroy();
   return Objeto;

@@ -1,20 +1,22 @@
 const { PermisoRolRecursoModelo, PermisoModelo, RecursoModelo } = require('../Relaciones/Relaciones');
 const ManejarError = require('../Utilidades/ErrorControladores');
 
-const ObtenerPermisosPorRolYRecurso = async (CodigoRol, Recurso, Respuesta) => {
+const ObtenerPermisosPorRolYRecurso = async (CodigoRol, Recurso) => {
   try {
     const Datos = await PermisoRolRecursoModelo.findAll({
-      where: { CodigoRol, Estatus: 1 },
+      where: { CodigoRol, Estatus: 1 }, 
       include: [
         {
           model: PermisoModelo,
+          as: 'Permiso',
           attributes: ['NombrePermiso'],
           where: { Estatus: 1 }
         },
         {
           model: RecursoModelo,
+          as: 'Recurso',
           attributes: ['NombreRecurso'],
-          where: { NombreRecurso: Recurso }
+          where: { NombreRecurso: Recurso, Estatus: 1 } 
         }
       ],
       attributes: [],
@@ -22,9 +24,11 @@ const ObtenerPermisosPorRolYRecurso = async (CodigoRol, Recurso, Respuesta) => {
       nest: true
     });
 
-    return Datos.map(Permiso => Permiso.Permiso.NombrePermiso);
-  } catch (Error) {
-    ManejarError(Error, Respuesta, 'Error al obtener permisos por rol y recurso');
+    const datosFiltrados = Datos.filter(Permiso => Permiso.Permiso.Estatus === 1 && Permiso.Recurso.Estatus === 1);
+    
+    return datosFiltrados.map(Permiso => Permiso.Permiso.NombrePermiso);
+  } catch (error) {
+    return [];
   }
 };
 

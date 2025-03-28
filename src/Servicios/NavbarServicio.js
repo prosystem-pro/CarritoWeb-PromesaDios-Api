@@ -1,9 +1,9 @@
 const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
-const Modelo = require('../Modelos/EmpresaPortada')(BaseDatos, Sequelize.DataTypes);
+const Modelo = require('../Modelos/Navbar')(BaseDatos, Sequelize.DataTypes);
 
-const NombreModelo= 'TituloQuienesSomos';
-const CodigoModelo= 'CodigoEmpresaPortada'
+const NombreModelo= 'TextoInicio';
+const CodigoModelo= 'CodigoNavbar'
 
 const Listado = async () => {
   return await Modelo.findAll({ where: { Estatus: 1 } });
@@ -25,8 +25,6 @@ const Buscar = async (TipoBusqueda, ValorBusqueda) => {
       return null;
   }
 };
-
-
 
 const Crear = async (Datos) => {
   return await Modelo.create(Datos);

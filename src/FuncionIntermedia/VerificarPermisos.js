@@ -17,7 +17,7 @@ const VerificarPermisos = (Permiso, Recurso) => {
       const Permisos = await ObtenerPermisosPorRolYRecurso(CodigoRol, Recurso);
 
       if (!Permisos.includes(Permiso)) {
-        return res.status(403).json({ error: `No tienes permiso para ${Permiso} en ${Recurso}` });
+        return res.status(403).json({ error: 'No tienes permiso para realizar esta acción' });
       }
 
       next();

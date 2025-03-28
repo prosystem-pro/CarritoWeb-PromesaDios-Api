@@ -6,7 +6,6 @@ const RutaModelos = Path.join(__dirname, '..', 'Modelos');
 
 const UsuarioModelo = require(Path.join(RutaModelos, 'Usuario.js'))(BaseDatos, Sequelize.DataTypes);
 const RolModelo = require(Path.join(RutaModelos, 'Rol.js'))(BaseDatos, Sequelize.DataTypes);
-const PermisoRolModelo = require(Path.join(RutaModelos, 'PermisoRol.js'))(BaseDatos, Sequelize.DataTypes);
 const PermisoModelo = require(Path.join(RutaModelos, 'Permiso.js'))(BaseDatos, Sequelize.DataTypes);
 const RecursoModelo = require(Path.join(RutaModelos, 'Recurso.js'))(BaseDatos, Sequelize.DataTypes);
 const PermisoRolRecursoModelo = require(Path.join(RutaModelos, 'PermisoRolRecurso.js'))(BaseDatos, Sequelize.DataTypes);
@@ -14,22 +13,18 @@ const PermisoRolRecursoModelo = require(Path.join(RutaModelos, 'PermisoRolRecurs
 UsuarioModelo.belongsTo(RolModelo, { foreignKey: 'CodigoRol' });
 RolModelo.hasMany(UsuarioModelo, { foreignKey: 'CodigoRol' });
 
-PermisoRolModelo.belongsTo(PermisoModelo, { foreignKey: 'CodigoPermiso' });
-PermisoModelo.hasMany(PermisoRolModelo, { foreignKey: 'CodigoPermiso' });
+PermisoRolRecursoModelo.belongsTo(PermisoModelo, { foreignKey: 'CodigoPermiso', as: 'Permiso' });
+PermisoModelo.hasMany(PermisoRolRecursoModelo, { foreignKey: 'CodigoPermiso', as: 'PermisoRolRecursos' });
 
-PermisoRolModelo.belongsTo(RolModelo, { foreignKey: 'CodigoRol' });
-RolModelo.hasMany(PermisoRolModelo, { foreignKey: 'CodigoRol' });
+PermisoRolRecursoModelo.belongsTo(RecursoModelo, { foreignKey: 'CodigoRecurso', as: 'Recurso' });
+RecursoModelo.hasMany(PermisoRolRecursoModelo, { foreignKey: 'CodigoRecurso', as: 'PermisoRolRecursos' });
 
-PermisoRolRecursoModelo.belongsTo(PermisoModelo, { foreignKey: 'CodigoPermiso' });
-PermisoModelo.hasMany(PermisoRolRecursoModelo, { foreignKey: 'CodigoPermiso' });
-
-PermisoRolRecursoModelo.belongsTo(RecursoModelo, { foreignKey: 'CodigoRecurso' });
-RecursoModelo.hasMany(PermisoRolRecursoModelo, { foreignKey: 'CodigoRecurso' });
+PermisoRolRecursoModelo.belongsTo(RolModelo, { foreignKey: 'CodigoRol', as: 'Rol' });
+RolModelo.hasMany(PermisoRolRecursoModelo, { foreignKey: 'CodigoRol', as: 'PermisoRolRecursos' });
 
 module.exports = {
   UsuarioModelo,
   RolModelo,
-  PermisoRolModelo,
   PermisoModelo,
   PermisoRolRecursoModelo,
   RecursoModelo

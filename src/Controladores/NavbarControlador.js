@@ -1,4 +1,4 @@
-const Servicio = require('../Servicios/EmpresaPortadaServicio');
+const Servicio = require('../Servicios/NavbarServicio');
 const ManejarError = require('../Utilidades/ErrorControladores');
 
 const Listado = async (req, res) => {

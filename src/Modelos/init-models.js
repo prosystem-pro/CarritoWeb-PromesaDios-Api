@@ -16,7 +16,6 @@ var _MenuPortada = require("./MenuPortada");
 var _Navbar = require("./Navbar");
 var _Otro = require("./Otro");
 var _Permiso = require("./Permiso");
-var _PermisoRol = require("./PermisoRol");
 var _PermisoRolRecurso = require("./PermisoRolRecurso");
 var _PortadaOtro = require("./PortadaOtro");
 var _Producto = require("./Producto");
@@ -52,7 +51,6 @@ function initModels(sequelize) {
   var Navbar = _Navbar(sequelize, DataTypes);
   var Otro = _Otro(sequelize, DataTypes);
   var Permiso = _Permiso(sequelize, DataTypes);
-  var PermisoRol = _PermisoRol(sequelize, DataTypes);
   var PermisoRolRecurso = _PermisoRolRecurso(sequelize, DataTypes);
   var PortadaOtro = _PortadaOtro(sequelize, DataTypes);
   var Producto = _Producto(sequelize, DataTypes);
@@ -116,14 +114,10 @@ function initModels(sequelize) {
   Empresa.hasMany(ReporteTiempoPaginaPortada, { as: "ReporteTiempoPaginaPortadas", foreignKey: "CodigoEmpresa"});
   ReporteVistaPortada.belongsTo(Empresa, { as: "CodigoEmpresa_Empresa", foreignKey: "CodigoEmpresa"});
   Empresa.hasMany(ReporteVistaPortada, { as: "ReporteVistaPortadas", foreignKey: "CodigoEmpresa"});
-  PermisoRol.belongsTo(Permiso, { as: "CodigoPermiso_Permiso", foreignKey: "CodigoPermiso"});
-  Permiso.hasMany(PermisoRol, { as: "PermisoRols", foreignKey: "CodigoPermiso"});
   PermisoRolRecurso.belongsTo(Permiso, { as: "CodigoPermiso_Permiso", foreignKey: "CodigoPermiso"});
   Permiso.hasMany(PermisoRolRecurso, { as: "PermisoRolRecursos", foreignKey: "CodigoPermiso"});
   PermisoRolRecurso.belongsTo(Recurso, { as: "CodigoRecurso_Recurso", foreignKey: "CodigoRecurso"});
   Recurso.hasMany(PermisoRolRecurso, { as: "PermisoRolRecursos", foreignKey: "CodigoRecurso"});
-  PermisoRol.belongsTo(Rol, { as: "CodigoRol_Rol", foreignKey: "CodigoRol"});
-  Rol.hasMany(PermisoRol, { as: "PermisoRols", foreignKey: "CodigoRol"});
   PermisoRolRecurso.belongsTo(Rol, { as: "CodigoRol_Rol", foreignKey: "CodigoRol"});
   Rol.hasMany(PermisoRolRecurso, { as: "PermisoRolRecursos", foreignKey: "CodigoRol"});
   Usuario.belongsTo(Rol, { as: "CodigoRol_Rol", foreignKey: "CodigoRol"});
@@ -161,7 +155,6 @@ function initModels(sequelize) {
     Navbar,
     Otro,
     Permiso,
-    PermisoRol,
     PermisoRolRecurso,
     PortadaOtro,
     Producto,

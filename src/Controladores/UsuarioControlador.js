@@ -7,7 +7,7 @@ const Listado = async (req, res) => {
     if (Objeto && Objeto.length > 0) {
       return res.json(Objeto);
     }
-    return res.status(400).json({ message: 'No se encontraron registros' });
+    return res.json(Objeto || []);
   } catch (error) {
     return ManejarError(error, res, 'Error al obtener los registros');
   }
@@ -15,8 +15,8 @@ const Listado = async (req, res) => {
 
 const ObtenerPorCodigo = async (req, res) => {
   try {
-    const { codigo } = req.params;
-    const Objeto = await Servicio.ObtenerPorCodigo(codigo);
+    const { Codigo } = req.params;
+    const Objeto = await Servicio.ObtenerPorCodigo(Codigo);
     if (Objeto) return res.json(Objeto);
     return res.status(404).json({ message: 'Registro no encontrado' });
   } catch (error) {
@@ -26,8 +26,8 @@ const ObtenerPorCodigo = async (req, res) => {
 
 const Buscar = async (req, res) => {
   try {
-    const { tipoBusqueda, valorBusqueda } = req.params;
-    const Objeto = await Servicio.Buscar(tipoBusqueda, valorBusqueda);
+    const { TipoBusqueda, ValorBusqueda } = req.params;
+    const Objeto = await Servicio.Buscar(TipoBusqueda, ValorBusqueda);
     if (Objeto && Objeto.length > 0) return res.json(Objeto);
     return res.status(404).json({ message: 'No se encontraron registros' });
   } catch (error) {
@@ -46,8 +46,8 @@ const Crear = async (req, res) => {
 
 const Editar = async (req, res) => {
   try {
-    const { codigo } = req.params;
-    const Objeto = await Servicio.Editar(codigo, req.body);
+    const { Codigo } = req.params;
+    const Objeto = await Servicio.Editar(Codigo, req.body);
     if (!Objeto) return res.status(404).json({ message: 'Registro no encontrado' });
     return res.status(200).json({ message: 'Se actualizó el registro exitosamente.' });
   } catch (error) {
@@ -57,8 +57,8 @@ const Editar = async (req, res) => {
 
 const Eliminar = async (req, res) => {
   try {
-    const { codigo } = req.params;
-    const Objeto = await Servicio.Eliminar(codigo);
+    const { Codigo } = req.params;
+    const Objeto = await Servicio.Eliminar(Codigo);
     if (!Objeto) return res.status(404).json({ message: 'Registro no encontrado' });
     return res.status(200).json({ message: 'Registro eliminado exitosamente' });
   } catch (error) {

@@ -17,27 +17,27 @@ module.exports = function(sequelize, DataTypes) {
     },
     TextoInicio: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorTextoInicio: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     TextoMenu: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorTextoMenu: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     TextoContacto: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorTextoContacto: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     TextoOtro: {
       type: DataTypes.STRING(32),
@@ -53,31 +53,31 @@ module.exports = function(sequelize, DataTypes) {
     },
     TextoBuscador: {
       type: DataTypes.STRING(128),
-      allowNull: false
+      allowNull: true
     },
     ColorTextoBuscador: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorFondoBuscador: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     UrlImagenBuscador: {
       type: DataTypes.STRING(256),
-      allowNull: false
+      allowNull: true
     },
     UrlImagenCarrito: {
       type: DataTypes.STRING(256),
-      allowNull: false
+      allowNull: true
     },
     ColorFondoNavbar: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     Estatus: {
       type: DataTypes.TINYINT,
-      allowNull: false
+      allowNull: true
     }
   }, {
     sequelize,
