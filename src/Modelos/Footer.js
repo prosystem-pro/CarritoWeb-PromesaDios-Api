@@ -17,87 +17,87 @@ module.exports = function(sequelize, DataTypes) {
     },
     TextoInicio: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorTextoInicio: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     TextoMenu: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorTextoMenu: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     TextoContacto: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorTextoContacto: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     TextoOtro: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorTextoOtro: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     TextoTelefonoOficina: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorTextoTelefonoOficina: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorNoCelular: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     TextoSuscripcion: {
       type: DataTypes.STRING(64),
-      allowNull: false
+      allowNull: true
     },
     ColorTextoSuscripcion: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     TextoRedesSociales: {
       type: DataTypes.STRING(64),
-      allowNull: false
+      allowNull: true
     },
     ColorTextoRedesSociales: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     TextoCorreo: {
       type: DataTypes.STRING(64),
-      allowNull: false
+      allowNull: true
     },
     ColorTextoCorreo: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     TextoBotonSuscribirte: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorTextoBotonSuscribirte: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorBotonSuscribirte: {
       type: DataTypes.STRING(64),
-      allowNull: false
+      allowNull: true
     },
     DerechoDeAutor: {
       type: DataTypes.STRING(128),
-      allowNull: false
+      allowNull: true
     },
     ColorDerechosDeAutor: {
       type: DataTypes.STRING(32),
@@ -105,11 +105,15 @@ module.exports = function(sequelize, DataTypes) {
     },
     ColorFooter: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
+    },
+    UrlLogo: {
+      type: DataTypes.STRING(256),
+      allowNull: true
     },
     Estatus: {
       type: DataTypes.TINYINT,
-      allowNull: false
+      allowNull: true
     }
   }, {
     sequelize,

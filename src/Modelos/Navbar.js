@@ -75,6 +75,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(32),
       allowNull: true
     },
+    UrlLogo: {
+      type: DataTypes.STRING(256),
+      allowNull: true
+    },
     Estatus: {
       type: DataTypes.TINYINT,
       allowNull: true
