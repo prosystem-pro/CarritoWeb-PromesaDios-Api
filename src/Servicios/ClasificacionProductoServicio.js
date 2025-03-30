@@ -1,12 +1,12 @@
 const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
-const Modelo = require('../Modelos/Recurso')(BaseDatos, Sequelize.DataTypes);
+const Modelo = require('../Modelos/ClasificacionProducto')(BaseDatos, Sequelize.DataTypes);
 
-const NombreModelo= 'NombreRecurso';
-const CodigoModelo= 'CodigoRecurso'
+const NombreModelo= 'NombreClasificacionProducto';
+const CodigoModelo= 'CodigoClasificacionProducto'
 
 const Listado = async () => {
-  return await Modelo.findAll({ where: { Estatus: [1,2] } });
+  return await Modelo.findAll({ where: { Estatus:  [1,2] } });
 };
 
 const ObtenerPorCodigo = async (Codigo) => {
@@ -17,10 +17,10 @@ const Buscar = async (TipoBusqueda, ValorBusqueda) => {
   switch (parseInt(TipoBusqueda)) {
     case 1:
       return await Modelo.findAll({
-        where: { [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` }, Estatus: [1,2] }
+        where: { [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` }, Estatus:  [1,2] }
       });
     case 2:
-      return await Modelo.findAll({ where: { Estatus: [1,2] }, order: [[NombreModelo, 'ASC']] });
+      return await Modelo.findAll({ where: { Estatus:  [1,2] }, order: [[NombreModelo, 'ASC']] });
     default:
       return null;
   }

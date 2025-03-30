@@ -19,6 +19,7 @@ const CarruselImagenRuta = require("./Rutas/CarruselImagenRuta");
 const FooterRuta = require("./Rutas/FooterRuta");
 const RedSocialRuta = require("./Rutas/RedSocialRuta");
 const RedSocialImagenRuta = require("./Rutas/RedSocialImagenRuta");
+const ClasificacionProductoRuta = require("./Rutas/ClasificacionProductoRuta");
 
 const Login = require("./Rutas/LoginRuta");
 const Ruter = 'api';
@@ -46,6 +47,7 @@ App.use(`/${Ruter}`, CarruselImagenRuta);
 App.use(`/${Ruter}`, FooterRuta);
 App.use(`/${Ruter}`, RedSocialRuta);
 App.use(`/${Ruter}`, RedSocialImagenRuta);
+App.use(`/${Ruter}`, ClasificacionProductoRuta);
 
 App.use(`/${Ruter}`, ModelosTypescriptRuta);
 App.use(`/${Ruter}`, SubirImagenRuta);

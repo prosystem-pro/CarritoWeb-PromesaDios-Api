@@ -10,7 +10,7 @@ const CodigoModelo = 'CodigoUsuario';
 const Listado = async () => {
   return await Modelo.findAll({
     where: {
-      Estatus: 1,
+      Estatus: [1,2],
       SuperAdmin: {
         [Op.is]: null 
       }
@@ -39,13 +39,13 @@ const Buscar = async (TipoBusqueda, ValorBusqueda) => {
       return await Modelo.findAll({
         where: { 
           [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` },
-          Estatus: 1,
+          Estatus: [1,2],
           SuperAdmin: null
         }
       });
     case 2:
       return await Modelo.findAll({
-        where: { Estatus: 1, SuperAdmin: null },
+        where: { Estatus: [1,2], SuperAdmin: null },
         order: [[NombreModelo, 'ASC']]
       });
     default:

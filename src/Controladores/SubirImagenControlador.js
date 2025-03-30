@@ -5,6 +5,8 @@ const { EliminarImagen } = require("../Servicios/EliminarImagenServicio");
 const Servicios = {
   EmpresaPortada: require("../Servicios/EmpresaPortadaServicio"),
   Navbar: require("../Servicios/NavbarServicio"),
+  Footer: require("../Servicios/FooterServicio"),
+  EmpresaPortada: require("../Servicios/EmpresaPortadaServicio"),
 };
 
 const SubirImagen = async (req, res) => {
