@@ -1,4 +1,4 @@
-const Servicio = require('../Servicios/NavbarServicio');
+const Servicio = require('../Servicios/FooterServicio');
 const ManejarError = require('../Utilidades/ErrorControladores');
 
 const Listado = async (req, res) => {
@@ -65,6 +65,5 @@ const Eliminar = async (req, res) => {
     return ManejarError(error, res, 'Error al eliminar el registro');
   }
 };
-
 
 module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar };

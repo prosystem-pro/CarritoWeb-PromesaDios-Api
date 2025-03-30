@@ -1,4 +1,4 @@
-const Servicio = require('../Servicios/NavbarServicio');
+const Servicio = require('../Servicios/LogoImagenServicio');
 const ManejarError = require('../Utilidades/ErrorControladores');
 
 const Listado = async (req, res) => {
