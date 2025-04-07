@@ -18,6 +18,7 @@ const IniciarSesionServicio = async (NombreUsuario, Clave) => {
       CodigoUsuario: Usuario.CodigoUsuario,
       NombreUsuario: Usuario.NombreUsuario,
       CodigoRol: Usuario.CodigoRol,
+      NombreRol: Usuario.NombreRol
     },
   };
 };

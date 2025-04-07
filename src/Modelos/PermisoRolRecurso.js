@@ -30,7 +30,8 @@ module.exports = function(sequelize, DataTypes) {
     },
     Estatus: {
       type: DataTypes.TINYINT,
-      allowNull: true
+      allowNull: true,
+      defaultValue: 1
     }
   }, {
     sequelize,

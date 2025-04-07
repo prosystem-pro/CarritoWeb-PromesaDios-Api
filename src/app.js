@@ -1,5 +1,4 @@
 const Express = require('express');
-require('dotenv').config();
 const App = Express();
 const EmpresaRuta = require('./Rutas/EmpresaRuta');
 const EmpresaPortadaRuta = require('./Rutas/EmpresaPortadaRuta');

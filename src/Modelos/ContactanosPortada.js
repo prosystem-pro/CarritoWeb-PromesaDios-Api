@@ -55,7 +55,8 @@ module.exports = function(sequelize, DataTypes) {
     },
     Estatus: {
       type: DataTypes.TINYINT,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 1
     }
   }, {
     sequelize,
