@@ -1,5 +1,5 @@
 const { PermisoRolRecursoModelo, PermisoModelo, RecursoModelo } = require('../Relaciones/Relaciones');
-const ManejarError = require('../Utilidades/ErrorControladores');
+const ManejarError = require('../Utilidades/ErrorServicios');
 
 const ObtenerPermisosPorRolYRecurso = async (CodigoRol, Recurso) => {
   try {
@@ -28,7 +28,7 @@ const ObtenerPermisosPorRolYRecurso = async (CodigoRol, Recurso) => {
     
     return datosFiltrados.map(Permiso => Permiso.Permiso.NombrePermiso);
   } catch (error) {
-    return [];
+    ManejarError(error, 'Error al obtener permisos');
   }
 };
 
