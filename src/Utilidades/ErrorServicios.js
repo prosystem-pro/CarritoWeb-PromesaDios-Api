@@ -1,5 +1,5 @@
-const ManejarError = (error, mensajeError) => {
-    const detallesError = {
+const ManejarError = (error, MensajeError) => {
+    const DetallesError = {
       message: error.message,
       stack: error.stack,
       type: error.name,
@@ -7,7 +7,7 @@ const ManejarError = (error, mensajeError) => {
       innerStack: error.innerError ? error.innerError.stack : null
     };
   
-    throw { message: mensajeError, error: detallesError };
+    throw { message: MensajeError, error: DetallesError };
   };
   
   module.exports = ManejarError;

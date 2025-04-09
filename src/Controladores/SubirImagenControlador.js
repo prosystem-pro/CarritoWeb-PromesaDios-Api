@@ -7,6 +7,8 @@ const Servicios = {
   Navbar: require("../Servicios/NavbarServicio"),
   Footer: require("../Servicios/FooterServicio"),
   EmpresaPortada: require("../Servicios/EmpresaPortadaServicio"),
+  Carrusel: require("../Servicios/CarruselServicio"),
+  CarruselImagen: require("../Servicios/CarruselImagenServicio"), 
 };
 
 const SubirImagen = async (req, res) => {
