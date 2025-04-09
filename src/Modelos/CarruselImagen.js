@@ -17,7 +17,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     NombreCarruselImagen: {
       type: DataTypes.STRING(64),
-      allowNull: false
+      allowNull: true
     },
     UrlImagen: {
       type: DataTypes.STRING(256),
