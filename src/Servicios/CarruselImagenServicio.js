@@ -44,4 +44,9 @@ const Eliminar = async (Codigo) => {
   return Objeto;
 };
 
-module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar };
+const ListadoPorCarrusel = async (CodigoCarrusel) => {
+  return await Modelo.findAll({
+    where: { CodigoCarrusel: CodigoCarrusel, Estatus: [1, 2] }
+  });
+};
+module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar, ListadoPorCarrusel };

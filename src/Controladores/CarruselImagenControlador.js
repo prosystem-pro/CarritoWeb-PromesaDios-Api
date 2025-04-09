@@ -66,4 +66,18 @@ const Eliminar = async (req, res) => {
   }
 };
 
-module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar };
+const ListadoPorCarrusel = async (req, res) => {
+  try {
+    const { CodigoCarrusel } = req.params;
+    const Objetos = await Servicio.ListadoPorCarrusel(CodigoCarrusel);
+
+    if (Objetos.length > 0) return res.json(Objetos);
+    return res.status(404).json({ message: 'No se encontraron imágenes para este carrusel' });
+
+  } catch (error) {
+    return ManejarError(error, res, 'Error al obtener las imágenes del carrusel');
+  }
+};
+
+
+module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar, ListadoPorCarrusel };
