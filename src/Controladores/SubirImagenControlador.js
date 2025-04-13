@@ -9,6 +9,7 @@ const Servicios = {
   EmpresaPortada: require("../Servicios/EmpresaPortadaServicio"),
   Carrusel: require("../Servicios/CarruselServicio"),
   CarruselImagen: require("../Servicios/CarruselImagenServicio"), 
+  ClasificacionRecurso: require("../Servicios/ClasificacionProductoServicio"), 
 };
 
 const SubirImagen = async (req, res) => {
