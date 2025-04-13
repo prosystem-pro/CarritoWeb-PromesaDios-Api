@@ -21,6 +21,14 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       unique: "Uq_CaRedSocial_NombreRedSocial"
     },
+    UrlImagen: {
+      type: DataTypes.STRING(256),
+      allowNull: false
+    },
+    Orden: {
+      type: DataTypes.STRING(64),
+      allowNull: true
+    },
     Estatus: {
       type: DataTypes.TINYINT,
       allowNull: false,
