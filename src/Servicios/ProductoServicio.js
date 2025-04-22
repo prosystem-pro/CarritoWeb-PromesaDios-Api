@@ -44,4 +44,13 @@ const Eliminar = async (Codigo) => {
   return Objeto;
 };
 
-module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar };
+const ListadoPorClasificacion = async (Codigo) => {
+  return await Modelo.findAll({
+    where: {
+      CodigoClasificacionProducto: CodigoClasificacionProducto,
+      Estatus: [1, 2]
+    }
+  });
+};
+
+module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar, ListadoPorClasificacion };

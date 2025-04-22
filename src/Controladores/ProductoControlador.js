@@ -66,4 +66,15 @@ const Eliminar = async (req, res) => {
   }
 };
 
-module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar };
+const ListadoPorClasificacion = async (req, res) => {
+  try {
+    const { CodigoClasificacionProducto } = req.params;
+    const Resultado = await Servicio.ListadoPorClasificacion(CodigoClasificacionProducto);
+    res.status(200).json(Resultado);
+  } catch (error) {
+    return ManejarError(error, res, 'Error al obtener los registros');
+  }
+};
+
+
+module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar, ListadoPorClasificacion };
