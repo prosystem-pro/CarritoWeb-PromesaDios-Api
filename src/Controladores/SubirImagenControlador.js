@@ -10,6 +10,14 @@ const Servicios = {
   Carrusel: require("../Servicios/CarruselServicio"),
   CarruselImagen: require("../Servicios/CarruselImagenServicio"), 
   ClasificacionProducto: require("../Servicios/ClasificacionProductoServicio"), 
+  RedSocial: require("../Servicios/RedSocialServicio"), 
+  Otro: require("../Servicios/OtroServicio"), 
+  ContactanosPortada: require("../Servicios/ContactanosPortadaServicio"), 
+  Producto: require("../Servicios/ProductoServicio"), 
+  ProductoPortada: require("../Servicios/Producto"), 
+  CarritoPortada: require("../Servicios/CarritoPortadaServicio"), 
+  MenuPortada: require("../Servicios/MenuPortadaServicio"), 
+  
 };
 
 const SubirImagen = async (req, res) => {

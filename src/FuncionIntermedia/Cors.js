@@ -1,5 +1,4 @@
 const Cors = require('cors');
-require('dotenv').config();
 
 const OpcionesCors = {
   origin: process.env.CORS_ALLOWED_ORIGINS.split(','),

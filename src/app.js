@@ -27,6 +27,8 @@ const ReporteProductoRuta = require("./Rutas/ReporteProductoRuta");
 const ReporteRedSocialRuta = require("./Rutas/ReporteRedSocialRuta");
 const ReporteTiempoPaginaRuta = require("./Rutas/ReporteTiempoPaginaRuta");
 const ReporteVistaRuta = require("./Rutas/ReporteVistaRuta");
+const ContactanosPortadaRuta = require("./Rutas/ContactanosPortadaRuta");
+const ProductoPortadaRuta = require("./Rutas/ProductoPortadaRuta");
 
 const Login = require("./Rutas/LoginRuta");
 const Ruter = 'api';
@@ -63,6 +65,8 @@ App.use(`/${Ruter}`, ReporteProductoRuta);
 App.use(`/${Ruter}`, ReporteRedSocialRuta);
 App.use(`/${Ruter}`, ReporteTiempoPaginaRuta);
 App.use(`/${Ruter}`, ReporteVistaRuta);
+App.use(`/${Ruter}`, ContactanosPortadaRuta);
+App.use(`/${Ruter}`, ProductoPortadaRuta);
 
 App.use(`/${Ruter}`, ModelosTypescriptRuta);
 App.use(`/${Ruter}`, SubirImagenRuta);
