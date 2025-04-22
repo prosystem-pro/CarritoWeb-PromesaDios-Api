@@ -18,7 +18,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     NombreProducto: {
       type: DataTypes.STRING(64),
-      allowNull: false,
+      allowNull: true,
       unique: "Uq_CaProducto_NombreProducto"
     },
     Moneda: {
