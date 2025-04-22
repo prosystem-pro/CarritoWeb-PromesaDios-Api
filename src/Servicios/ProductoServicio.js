@@ -47,7 +47,7 @@ const Eliminar = async (Codigo) => {
 const ListadoPorClasificacion = async (Codigo) => {
   return await Modelo.findAll({
     where: {
-      CodigoClasificacionProducto: CodigoClasificacionProducto,
+      CodigoClasificacionProducto: Codigo,
       Estatus: [1, 2]
     }
   });

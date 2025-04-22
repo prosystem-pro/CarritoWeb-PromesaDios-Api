@@ -68,11 +68,11 @@ const Eliminar = async (req, res) => {
 
 const ListadoPorClasificacion = async (req, res) => {
   try {
-    const { CodigoClasificacionProducto } = req.params;
-    const Resultado = await Servicio.ListadoPorClasificacion(CodigoClasificacionProducto);
+    const { Codigo } = req.params;
+    const Resultado = await Servicio.ListadoPorClasificacion(Codigo);
     res.status(200).json(Resultado);
   } catch (error) {
-    return ManejarError(error, res, 'Error al obtener los registros');
+return ManejarError(error, res, 'Error al obtener los registros');
   }
 };
 
