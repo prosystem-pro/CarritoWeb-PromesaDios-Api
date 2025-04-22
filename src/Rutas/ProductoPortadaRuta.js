@@ -2,7 +2,7 @@ const Express = require('express');
 const Router = Express.Router();
 const Modelo = 'productoportada';
 const Tabla = 'ProductoPortada'
-const { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar } = require('../Controladores/ProductoPortada');
+const { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar } = require('../Controladores/ProductoPortadaControlador');
 const VerificarToken = require('../FuncionIntermedia/VerificarToken');
 const VerificarPermisos = require('../FuncionIntermedia/VerificarPermisos'); 
 
