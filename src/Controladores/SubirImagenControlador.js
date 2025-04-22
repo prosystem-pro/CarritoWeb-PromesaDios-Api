@@ -14,7 +14,7 @@ const Servicios = {
   Otro: require("../Servicios/OtroServicio"), 
   ContactanosPortada: require("../Servicios/ContactanosPortadaServicio"), 
   Producto: require("../Servicios/ProductoServicio"), 
-  ProductoPortada: require("../Servicios/ProductoServicio"), 
+  ProductoPortada: require("../Servicios/ProductoPortadaServicio"), 
   CarritoPortada: require("../Servicios/CarritoPortadaServicio"), 
   MenuPortada: require("../Servicios/MenuPortadaServicio"), 
   
