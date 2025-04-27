@@ -23,11 +23,11 @@ module.exports = function(sequelize, DataTypes) {
     },
     Moneda: {
       type: DataTypes.STRING(8),
-      allowNull: false
+      allowNull: true
     },
     Precio: {
       type: DataTypes.DECIMAL(10,1),
-      allowNull: false
+      allowNull: true
     },
     UrlImagen: {
       type: DataTypes.STRING(256),
