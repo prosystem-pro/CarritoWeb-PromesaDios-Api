@@ -12,7 +12,7 @@ Router.get(`/${Modelo}/buscar/:TipoBusqueda/:ValorBusqueda`,VerificarToken,Verif
 Router.post(`/${Modelo}/crear`, VerificarToken,VerificarPermisos('Crear', Tabla),Crear);
 Router.put(`/${Modelo}/editar/:CodigoRol/:CodigoPermiso/:CodigoRecurso`, VerificarToken, VerificarPermisos('Editar', Tabla), Editar);
 Router.delete(`/${Modelo}/eliminar/:CodigoRol/:CodigoPermiso/:CodigoRecurso`, VerificarToken,VerificarPermisos('Eliminar',Tabla),  Eliminar);
-Router.get(`/${Modelo}/obtener-permisos/:CodigoRol`, VerificarToken, VerificarPermisos('Listar', Tabla), ObtenerPermisosAsignados);
+Router.get(`/${Modelo}/obtener-permisos/:CodigoRol`, VerificarToken, VerificarPermisos('Ver', Tabla), ObtenerPermisosAsignados);
 Router.get(`/${Modelo}-obtener-recursos/:CodigoRol/:CodigoPermiso`, VerificarToken, VerificarPermisos('Listar', Tabla), ObtenerRecursosDisponibles);
 
 module.exports = Router;
