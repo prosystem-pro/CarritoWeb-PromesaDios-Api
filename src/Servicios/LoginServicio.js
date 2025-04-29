@@ -23,8 +23,15 @@ const IniciarSesionServicio = async (NombreUsuario, Clave) => {
   const Valida = await CompararClaves(Clave, Usuario.ClaveHash);
   if (!Valida) throw new Error("Usuario o contraseña incorrectos");
 
-  // Generamos el token de autenticación
-  const Token = GenerarToken(Usuario);
+  // const Token = GenerarToken(Usuario);
+  const Token = GenerarToken({
+    CodigoUsuario: Usuario.CodigoUsuario,
+    CodigoRol: Usuario.CodigoRol,
+    NombreUsuario: Usuario.NombreUsuario,
+    NombreRol: Usuario.Rol?.NombreRol || null,  
+    SuperAdmin: Usuario.SuperAdmin  
+  });
+  
 
   // Retornamos el token y la información del usuario, incluyendo NombreRol
   return {
