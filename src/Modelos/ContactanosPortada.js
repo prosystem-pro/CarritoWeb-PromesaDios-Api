@@ -29,6 +29,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(32),
       allowNull: false
     },
+    ColorContornoNombreContactanosPortada: {
+      type: DataTypes.STRING(32),
+      allowNull: false
+    },
     ColorFondoRedSocial: {
       type: DataTypes.STRING(32),
       allowNull: false
