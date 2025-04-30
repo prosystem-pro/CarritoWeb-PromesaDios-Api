@@ -18,48 +18,52 @@ module.exports = function(sequelize, DataTypes) {
     },
     NombreContactanosPortada: {
       type: DataTypes.STRING(32),
-      allowNull: false,
+      allowNull: true,
       unique: "Uq_UiContactanosPortada_NombreContactanosPortada"
     },
     ColorNombreContactanosPortada: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorFondoNombreContactanosPortada: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorContornoNombreContactanosPortada: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
+    },
+    UrlImagenContactanosPortada: {
+      type: DataTypes.STRING(256),
+      allowNull: true
     },
     ColorFondoRedSocial: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorIconoAgregar: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     TextoComoLlegar: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorTextoComoLlegar: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorBotonComoLlegar: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     UrlImagenComoLlegar: {
       type: DataTypes.STRING(256),
-      allowNull: false
+      allowNull: true
     },
     Estatus: {
       type: DataTypes.TINYINT,
-      allowNull: false,
+      allowNull: true,
       defaultValue: 1
     }
   }, {
