@@ -45,6 +45,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(32),
       allowNull: true
     },
+    ColorTextoRedSocial: {
+      type: DataTypes.STRING(32),
+      allowNull: true
+    },
     ColorIconoAgregar: {
       type: DataTypes.STRING(32),
       allowNull: true
