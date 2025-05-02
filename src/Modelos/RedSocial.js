@@ -23,6 +23,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(256),
       allowNull: true
     },
+    Link: {
+      type: DataTypes.STRING(256),
+      allowNull: true
+    },
     Orden: {
       type: DataTypes.STRING(64),
       allowNull: true
