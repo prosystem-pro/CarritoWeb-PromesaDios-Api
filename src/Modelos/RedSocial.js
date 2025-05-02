@@ -13,13 +13,11 @@ module.exports = function(sequelize, DataTypes) {
       references: {
         model: 'Empresa',
         key: 'CodigoEmpresa'
-      },
-      unique: "Uq_CaRedSocial_NombreRedSocial"
+      }
     },
     NombreRedSocial: {
       type: DataTypes.STRING(64),
-      allowNull: true,
-      unique: "Uq_CaRedSocial_NombreRedSocial"
+      allowNull: true
     },
     UrlImagen: {
       type: DataTypes.STRING(256),
@@ -45,14 +43,6 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         fields: [
           { name: "CodigoRedSocial" },
-        ]
-      },
-      {
-        name: "Uq_CaRedSocial_NombreRedSocial",
-        unique: true,
-        fields: [
-          { name: "CodigoEmpresa" },
-          { name: "NombreRedSocial" },
         ]
       },
     ]
