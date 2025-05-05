@@ -69,6 +69,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(256),
       allowNull: true
     },
+    UrlMapaComoLlegar: {
+      type: DataTypes.STRING(256),
+      allowNull: true
+    },
     UrlMapa: {
       type: DataTypes.TEXT,
       allowNull: true
