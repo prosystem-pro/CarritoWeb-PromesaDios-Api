@@ -70,7 +70,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     UrlMapa: {
-      type: DataTypes.STRING(256),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     Estatus: {
