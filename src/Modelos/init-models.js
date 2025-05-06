@@ -10,6 +10,7 @@ var _Empresa = require("./Empresa");
 var _EmpresaPortada = require("./EmpresaPortada");
 var _Footer = require("./Footer");
 var _Icono = require("./Icono");
+var _LoginPortada = require("./LoginPortada");
 var _Logo = require("./Logo");
 var _LogoImagen = require("./LogoImagen");
 var _MenuPortada = require("./MenuPortada");
@@ -45,6 +46,7 @@ function initModels(sequelize) {
   var EmpresaPortada = _EmpresaPortada(sequelize, DataTypes);
   var Footer = _Footer(sequelize, DataTypes);
   var Icono = _Icono(sequelize, DataTypes);
+  var LoginPortada = _LoginPortada(sequelize, DataTypes);
   var Logo = _Logo(sequelize, DataTypes);
   var LogoImagen = _LogoImagen(sequelize, DataTypes);
   var MenuPortada = _MenuPortada(sequelize, DataTypes);
@@ -149,6 +151,7 @@ function initModels(sequelize) {
     EmpresaPortada,
     Footer,
     Icono,
+    LoginPortada,
     Logo,
     LogoImagen,
     MenuPortada,
