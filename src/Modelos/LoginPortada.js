@@ -22,6 +22,11 @@ module.exports = function(sequelize, DataTypes) {
     Color: {
       type: DataTypes.STRING(32),
       allowNull: true
+    },
+    Estatus: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 1
     }
   }, {
     sequelize,
