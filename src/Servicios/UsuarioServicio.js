@@ -94,41 +94,16 @@ const Editar = async (Codigo, Datos) => {
 
 
 
-// const Eliminar = async (Codigo) => {
-//   const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
-//   if (!Objeto) return null;
-
-//   if ("SuperAdmin" in Objeto && Objeto.SuperAdmin !== null) {
-//     throw new Error("No se puede eliminar a un usuario con Super Administrador lleno.");
-//   }
-
-//   await Objeto.destroy();
-//   return Objeto;
-// };
 const Eliminar = async (Codigo) => {
-  try {
-    const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
-    if (!Objeto) {
-      console.warn(`No se encontró el registro con código: ${Codigo}`);
-      return null;
-    }
+  const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
+  if (!Objeto) return null;
 
-    // 🧹 Eliminar la imagen si existe
-    if (Objeto.UrlImagen) {
-      console.log(`Eliminando imagen de Firebase: ${Objeto.UrlImagen}`);
-      await EliminarImagen(Objeto.UrlImagen);
-    }
-
-    // 🧾 Eliminar el registro de la base de datos
-    await Objeto.destroy();
-    console.log(`Registro eliminado con éxito: ${Codigo}`);
-    return Objeto;
-
-  } catch (error) {
-    console.error("Error al eliminar red social y/o su imagen:", error);
-    throw error;
+  if ("SuperAdmin" in Objeto && Objeto.SuperAdmin !== null) {
+    throw new Error("No se puede eliminar a un usuario con Super Administrador lleno.");
   }
-};
 
+  await Objeto.destroy();
+  return Objeto;
+};
 
 module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar };
