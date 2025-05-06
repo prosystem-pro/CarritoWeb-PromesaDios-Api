@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/RedSocial')(BaseDatos, Sequelize.DataTypes);
-const { EliminarImagen } = require('../Utilidades/EliminarImagenFirebase');
+const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
 
 const NombreModelo= 'NombreRedSocial';
 const CodigoModelo= 'CodigoRedSocial'
