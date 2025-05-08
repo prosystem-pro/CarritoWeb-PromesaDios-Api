@@ -18,16 +18,16 @@ module.exports = function(sequelize, DataTypes) {
     },
     NombreOtro: {
       type: DataTypes.STRING(64),
-      allowNull: false,
+      allowNull: true,
       unique: "Uq_CaOtro_NombreReceta"
     },
     UrlImagen: {
       type: DataTypes.STRING(256),
-      allowNull: false
+      allowNull: true
     },
     Descripcion: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true
     },
     Estatus: {
       type: DataTypes.TINYINT,
