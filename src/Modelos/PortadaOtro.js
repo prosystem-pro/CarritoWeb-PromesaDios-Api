@@ -17,27 +17,27 @@ module.exports = function(sequelize, DataTypes) {
     },
     NombrePortadaOtro: {
       type: DataTypes.STRING(64),
-      allowNull: false
+      allowNull: true
     },
     ColorNombrePortadaOtro: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorFondoNombrePortadaOtro: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     Descripcion: {
-      type: DataTypes.STRING(256),
-      allowNull: false
+      type: DataTypes.TEXT,
+      allowNull: true
     },
     ColorDescripcion: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     ColorDescripcionOtro: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     Estatus: {
       type: DataTypes.TINYINT,
