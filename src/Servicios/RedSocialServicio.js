@@ -28,6 +28,13 @@ const Buscar = async (TipoBusqueda, ValorBusqueda) => {
 };
 
 const Crear = async (Datos) => {
+
+  const total = await Modelo.count({ where: { Estatus: [1, 2] } });
+
+  if (total >= 8) {
+    throw new Error('No se pueden crear más de 8 redes sociales activas.');
+  }
+
   return await Modelo.create(Datos);
 };
 
