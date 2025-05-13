@@ -27,8 +27,15 @@ const Buscar = async (TipoBusqueda, ValorBusqueda) => {
 };
 
 const Crear = async (Datos) => {
+  const total = await Modelo.count({ where: { Estatus: [1, 2] } });
+
+  if (total >= 8) {
+    throw new Error('No se pueden crear más de 8 registros.');
+  }
+
   return await Modelo.create(Datos);
 };
+
 
 const Editar = async (Codigo, Datos) => {
   const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
