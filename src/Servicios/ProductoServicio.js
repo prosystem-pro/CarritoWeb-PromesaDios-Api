@@ -38,10 +38,20 @@ const Editar = async (Codigo, Datos) => {
 };
 
 const Eliminar = async (Codigo) => {
-  const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
-  if (!Objeto) return null;
-  await Objeto.destroy();
-  return Objeto;
+  try {
+    const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
+    if (!Objeto) return null;
+
+    const UrlImagen = Objeto.UrlImagen;
+    if (UrlImagen) {
+      await EliminarImagen(UrlImagen);
+    }
+
+    await Objeto.destroy();
+    return Objeto;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const ListadoPorClasificacion = async (Codigo) => {
