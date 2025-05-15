@@ -43,16 +43,15 @@ const Eliminar = async (Codigo) => {
     if (!Objeto) return null;
 
     const UrlImagen = Objeto.UrlImagen;
-    if (UrlImagen) {
-      await EliminarImagen(UrlImagen);
-    }
-
+    await EliminarImagen(UrlImagen);
     await Objeto.destroy();
+
     return Objeto;
   } catch (error) {
     throw error;
   }
 };
+
 
 const ListadoPorClasificacion = async (Codigo) => {
   return await Modelo.findAll({
