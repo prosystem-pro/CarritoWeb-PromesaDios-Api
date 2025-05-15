@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/Otro')(BaseDatos, Sequelize.DataTypes);
+const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
 
 const NombreModelo= 'NombreOtro';
 const CodigoModelo= 'CodigoOtro'
