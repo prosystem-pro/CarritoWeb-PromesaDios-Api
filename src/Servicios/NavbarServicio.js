@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/Navbar')(BaseDatos, Sequelize.DataTypes);
+const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
 
 const NombreModelo= 'TextoInicio';
 const CodigoModelo= 'CodigoNavbar'
@@ -37,11 +38,37 @@ const Editar = async (Codigo, Datos) => {
   return Objeto;
 };
 
+
+
 const Eliminar = async (Codigo) => {
-  const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
-  if (!Objeto) return null;
-  await Objeto.destroy();
-  return Objeto;
+  try {
+    const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
+    if (!Objeto) return null;
+
+    const CamposImagen = [
+      'UrlImagenBuscador',
+      'UrlImagenCarrito',
+      'UrlLogo'
+    ];
+
+    for (const campo of CamposImagen) {
+      const url = Objeto[campo];
+      if (url) {
+        try {
+          await EliminarImagen(url);
+        } catch (error) {
+          console.warn(`No se pudo eliminar la imagen del campo "${campo}": ${error.message}`);
+        }
+      }
+    }
+
+    await Objeto.destroy();
+    return Objeto;
+
+  } catch (error) {
+    console.error("Error en la función Eliminar:", error.message);
+    throw error;
+  }
 };
 
 

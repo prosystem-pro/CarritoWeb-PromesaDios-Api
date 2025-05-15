@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/Footer')(BaseDatos, Sequelize.DataTypes);
+const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
 
 const NombreModelo= 'TextoInicio';
 const CodigoModelo= 'CodigoFooter'
@@ -38,10 +39,18 @@ const Editar = async (Codigo, Datos) => {
 };
 
 const Eliminar = async (Codigo) => {
-  const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
-  if (!Objeto) return null;
-  await Objeto.destroy();
-  return Objeto;
+  try {
+    const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
+    if (!Objeto) return null;
+
+    const UrlImagen = Objeto.UrlLogo;
+    await EliminarImagen(UrlImagen);
+    await Objeto.destroy();
+
+    return Objeto;
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar };

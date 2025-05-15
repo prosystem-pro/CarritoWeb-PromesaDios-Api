@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/CarruselImagen')(BaseDatos, Sequelize.DataTypes);
+const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
 
 const NombreModelo= 'Orden';
 const CodigoModelo= 'CodigoCarruselImagen'
@@ -38,10 +39,18 @@ const Editar = async (Codigo, Datos) => {
 };
 
 const Eliminar = async (Codigo) => {
-  const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
-  if (!Objeto) return null;
-  await Objeto.destroy();
-  return Objeto;
+  try {
+    const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
+    if (!Objeto) return null;
+
+    const UrlImagen = Objeto.UrlImagen;
+    await EliminarImagen(UrlImagen);
+    await Objeto.destroy();
+
+    return Objeto;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const ListadoPorCarrusel = async (CodigoCarrusel) => {
