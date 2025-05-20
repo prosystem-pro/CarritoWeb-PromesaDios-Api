@@ -172,18 +172,6 @@ const ObtenerResumen = async (Anio, Mes) => {
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 const ObtenerPorCodigo = async (Codigo) => {
   return await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
 };
@@ -201,10 +189,27 @@ const Buscar = async (TipoBusqueda, ValorBusqueda) => {
   }
 };
 
+
 const Crear = async (Datos) => {
-  Datos.Fecha = DateTime.now().setZone('America/Guatemala').toISO();
-  return await Modelo.create(Datos);
+  // Verificar si Datos es un arreglo
+  const EsArray = Array.isArray(Datos);
+
+  // Normalizar datos a arreglo para tratamiento uniforme
+  const ListaDatos = EsArray ? Datos : [Datos];
+
+  // Agregar fecha a cada registro usando la zona horaria de Guatemala
+  const FechaActual = DateTime.now().setZone('America/Guatemala').toISO();
+  const DatosConFecha = ListaDatos.map(dato => ({
+    ...dato,
+    Fecha: FechaActual,
+  }));
+
+  // Crear registros (bulk o individual según entrada)
+  return EsArray
+    ? await Modelo.bulkCreate(DatosConFecha)
+    : await Modelo.create(DatosConFecha[0]);
 };
+
 
 const Editar = async (Codigo, Datos) => {
   const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
