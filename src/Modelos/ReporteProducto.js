@@ -7,14 +7,6 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    CodigoEmpresa: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'Empresa',
-        key: 'CodigoEmpresa'
-      }
-    },
     CodigoProducto: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -23,9 +15,17 @@ module.exports = function(sequelize, DataTypes) {
         key: 'CodigoProducto'
       }
     },
-    CantidadVendidad: {
+    CantidadVendida: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    DireccionIp: {
+      type: DataTypes.STRING(64),
+      allowNull: true
+    },
+    Navegador: {
+      type: DataTypes.STRING(128),
+      allowNull: true
     },
     Fecha: {
       type: DataTypes.DATE,

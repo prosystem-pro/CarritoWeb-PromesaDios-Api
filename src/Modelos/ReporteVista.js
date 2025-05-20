@@ -7,20 +7,20 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    CodigoEmpresa: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'Empresa',
-        key: 'CodigoEmpresa'
-      }
-    },
-    Cantidad: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
     NombreDiagrama: {
       type: DataTypes.STRING(64),
+      allowNull: true
+    },
+    DireccionIp: {
+      type: DataTypes.STRING(64),
+      allowNull: true
+    },
+    Navegador: {
+      type: DataTypes.STRING(64),
+      allowNull: true
+    },
+    Fecha: {
+      type: DataTypes.DATE,
       allowNull: false
     },
     Estatus: {

@@ -7,15 +7,6 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    CodigoEmpresa: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'Empresa',
-        key: 'CodigoEmpresa'
-      },
-      unique: "Uq_ReReporteRedSocial_NombreDiagrama"
-    },
     CodigoRedSocial: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -24,18 +15,21 @@ module.exports = function(sequelize, DataTypes) {
         key: 'CodigoRedSocial'
       }
     },
-    Cantidad: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
     Fecha: {
       type: DataTypes.DATE,
       allowNull: false
     },
+    DireccionIp: {
+      type: DataTypes.STRING(64),
+      allowNull: true
+    },
+    Navegador: {
+      type: DataTypes.STRING(128),
+      allowNull: true
+    },
     NombreDiagrama: {
       type: DataTypes.STRING(64),
-      allowNull: true,
-      unique: "Uq_ReReporteRedSocial_NombreDiagrama"
+      allowNull: true
     },
     Estatus: {
       type: DataTypes.TINYINT,
@@ -53,14 +47,6 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         fields: [
           { name: "CodigoReporteRedSocial" },
-        ]
-      },
-      {
-        name: "Uq_ReReporteRedSocial_NombreDiagrama",
-        unique: true,
-        fields: [
-          { name: "CodigoEmpresa" },
-          { name: "NombreDiagrama" },
         ]
       },
     ]

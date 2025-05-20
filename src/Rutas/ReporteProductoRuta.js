@@ -2,11 +2,13 @@ const Express = require('express');
 const Router = Express.Router();
 const Modelo = 'reporteproducto';
 const Tabla = 'ReporteProducto'
-const { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar } = require('../Controladores/ReporteProductoControlador');
+const { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar, ObtenerResumen } = require('../Controladores/ReporteProductoControlador');
 const VerificarToken = require('../FuncionIntermedia/VerificarToken');
 const VerificarPermisos = require('../FuncionIntermedia/VerificarPermisos'); 
 
 Router.get(`/${Modelo}/listado`, Listado);
+Router.get(`/${Modelo}/obtenerresumen/:anio/:mes`, VerificarToken, VerificarPermisos('Ver', Tabla), ObtenerResumen);
+Router.get(`/${Modelo}/resumen/:anio/:mes`, VerificarToken, VerificarPermisos('Ver', Tabla), ObtenerResumen);
 Router.get(`/${Modelo}/:Codigo`,VerificarToken,VerificarPermisos('Ver',Tabla), ObtenerPorCodigo);
 Router.get(`/${Modelo}/buscar/:TipoBusqueda/:ValorBusqueda`,VerificarToken,VerificarPermisos('Buscar',Tabla), Buscar);
 Router.post(`/${Modelo}/crear`, VerificarToken,VerificarPermisos('Crear',Tabla),Crear);

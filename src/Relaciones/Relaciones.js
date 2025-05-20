@@ -9,6 +9,9 @@ const RolModelo = require(Path.join(RutaModelos, 'Rol.js'))(BaseDatos, Sequelize
 const PermisoModelo = require(Path.join(RutaModelos, 'Permiso.js'))(BaseDatos, Sequelize.DataTypes);
 const RecursoModelo = require(Path.join(RutaModelos, 'Recurso.js'))(BaseDatos, Sequelize.DataTypes);
 const PermisoRolRecursoModelo = require(Path.join(RutaModelos, 'PermisoRolRecurso.js'))(BaseDatos, Sequelize.DataTypes);
+const Producto = require(Path.join(RutaModelos, 'Producto.js'))(BaseDatos, Sequelize.DataTypes);
+const ClasificacionProducto = require(Path.join(RutaModelos, 'ClasificacionProducto.js'))(BaseDatos, Sequelize.DataTypes);
+const ReporteProducto = require(Path.join(RutaModelos, 'ReporteProducto.js'))(BaseDatos, Sequelize.DataTypes);
 
 UsuarioModelo.belongsTo(RolModelo, { foreignKey: 'CodigoRol',as: 'Rol' });
 RolModelo.hasMany(UsuarioModelo, { foreignKey: 'CodigoRol' });
@@ -22,10 +25,25 @@ RecursoModelo.hasMany(PermisoRolRecursoModelo, { foreignKey: 'CodigoRecurso', as
 PermisoRolRecursoModelo.belongsTo(RolModelo, { foreignKey: 'CodigoRol', as: 'Rol' });
 RolModelo.hasMany(PermisoRolRecursoModelo, { foreignKey: 'CodigoRol', as: 'PermisoRolRecursos' });
 
+Producto.belongsTo(ClasificacionProducto, { foreignKey: 'CodigoClasificacion', as: 'ClasificacionProducto' });
+
+// Relación: ClasificacionProducto tiene muchos productos
+ClasificacionProducto.hasMany(Producto, { foreignKey: 'CodigoClasificacion', as: 'Productos' });
+
+// Relación: ReporteProducto pertenece a un producto
+ReporteProducto.belongsTo(Producto, { as: 'Producto', foreignKey: 'CodigoProducto' });
+
+
+// Relación: Producto tiene muchos ReporteProducto
+Producto.hasMany(ReporteProducto, { foreignKey: 'CodigoProducto', as: 'Reportes' });
+
 module.exports = {
   UsuarioModelo,
   RolModelo,
   PermisoModelo,
   PermisoRolRecursoModelo,
-  RecursoModelo
+  RecursoModelo,
+  Producto,
+  ClasificacionProducto,
+  ReporteProducto
 };
