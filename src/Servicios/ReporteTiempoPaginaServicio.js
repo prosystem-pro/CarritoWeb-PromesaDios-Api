@@ -1,9 +1,72 @@
 const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/ReporteTiempoPagina')(BaseDatos, Sequelize.DataTypes);
+const { DateTime } = require('luxon');
+
 
 const NombreModelo= 'NombreDiagrama';
 const CodigoModelo= 'CodigoReporteTiempoPagina'
+
+const ObtenerResumen = async (Anio, Mes) => {
+  const Registros = await Modelo.findAll({ where: { Estatus: [1, 2] } });
+
+  const RegistrosConFechaLocal = Registros.map(Registro => {
+    const RegistroPlano = Registro.toJSON();
+    if (RegistroPlano.Fecha) {
+      RegistroPlano.Fecha = DateTime
+        .fromJSDate(RegistroPlano.Fecha)
+        .setZone('America/Guatemala');
+    }
+    return RegistroPlano;
+  });
+  console.log('Registros con Fecha Local:', RegistrosConFechaLocal);
+  const RegistrosFiltrados = (Anio && Mes)
+    ? RegistrosConFechaLocal.filter(Registro =>
+        Registro.Fecha.year === parseInt(Anio) &&
+        Registro.Fecha.month === parseInt(Mes)
+      )
+    : RegistrosConFechaLocal;
+
+  const ConteoPorDia = {};
+  RegistrosFiltrados.forEach(Registro => {
+    const Dia = Registro.Fecha.day;
+    ConteoPorDia[Dia] = (ConteoPorDia[Dia] || 0) + 1;
+  });
+
+  const ConteoPorDiaOrdenadoArray = Object.entries(ConteoPorDia)
+    .map(([Dia, Total]) => ({ dia: Dia.toString().padStart(2, '0'), total: Total }))
+    .sort((a, b) => parseInt(a.dia) - parseInt(b.dia));
+
+  const MesesNombres = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+
+  const RegistrosDelAnio = Anio
+    ? RegistrosConFechaLocal.filter(Registro =>
+        Registro.Fecha.year === parseInt(Anio)
+      )
+    : [];
+
+  const ConteoPorMes = new Array(12).fill(0);
+
+  RegistrosDelAnio.forEach(Registro => {
+    const MesIndex = Registro.Fecha.month - 1;
+    ConteoPorMes[MesIndex]++;
+  });
+
+  const ConteoPorMesFormateado = ConteoPorMes.map((Total, Index) => ({
+    mes: (Index + 1).toString().padStart(2, '0'),
+    nombre: MesesNombres[Index],
+    total: Total
+  }));
+
+  return {
+    SolicitudTotalMes: RegistrosFiltrados.length,
+    SolicitudesDiaMes: ConteoPorDiaOrdenadoArray,
+    SolicitudesPorMes: ConteoPorMesFormateado
+  };
+};
 
 const Listado = async () => {
   return await Modelo.findAll({ where: { Estatus:  [1,2] } });
@@ -27,7 +90,18 @@ const Buscar = async (TipoBusqueda, ValorBusqueda) => {
 };
 
 const Crear = async (Datos) => {
-  return await Modelo.create(Datos);
+  const EsArray = Array.isArray(Datos);
+  const ListaDatos = EsArray ? Datos : [Datos];
+
+  const FechaActual = DateTime.now().setZone('America/Guatemala').toISO();
+  const DatosConFecha = ListaDatos.map(dato => ({
+    ...dato,
+    Fecha: FechaActual,
+  }));
+
+  return EsArray
+    ? await Modelo.bulkCreate(DatosConFecha)
+    : await Modelo.create(DatosConFecha[0]);
 };
 
 const Editar = async (Codigo, Datos) => {
@@ -44,4 +118,4 @@ const Eliminar = async (Codigo) => {
   return Objeto;
 };
 
-module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar };
+module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar, ObtenerResumen };

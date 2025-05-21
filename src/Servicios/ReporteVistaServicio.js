@@ -6,67 +6,66 @@ const { DateTime } = require('luxon');
 const NombreModelo= 'NombreDiagrama';
 const CodigoModelo= 'CodigoReporteVista'
 
-const ObtenerResumen = async (anio, mes) => {
-  const registros = await Modelo.findAll({ where: { Estatus: [1, 2] } });
+const ObtenerResumen = async (Anio, Mes) => {
+  const Registros = await Modelo.findAll({ where: { Estatus: [1, 2] } });
 
-  const registrosConFechaLocal = registros.map(registro => {
-    const registroPlano = registro.toJSON();
-    if (registroPlano.Fecha) {
-      registroPlano.Fecha = DateTime
-        .fromISO(registroPlano.Fecha.toISOString())
+  const RegistrosConFechaLocal = Registros.map(Registro => {
+    const RegistroPlano = Registro.toJSON();
+    if (RegistroPlano.Fecha) {
+      RegistroPlano.Fecha = DateTime
+        .fromJSDate(RegistroPlano.Fecha)
         .setZone('America/Guatemala');
     }
-    return registroPlano;
+    return RegistroPlano;
   });
-
-  const registrosFiltrados = (anio && mes)
-    ? registrosConFechaLocal.filter(registro =>
-        registro.Fecha.year === parseInt(anio) &&
-        registro.Fecha.month === parseInt(mes)
+  console.log('Registros con Fecha Local:', RegistrosConFechaLocal);
+  const RegistrosFiltrados = (Anio && Mes)
+    ? RegistrosConFechaLocal.filter(Registro =>
+        Registro.Fecha.year === parseInt(Anio) &&
+        Registro.Fecha.month === parseInt(Mes)
       )
-    : registrosConFechaLocal;
+    : RegistrosConFechaLocal;
 
-  const conteoPorDia = {};
-  registrosFiltrados.forEach(registro => {
-    const dia = registro.Fecha.day;
-    conteoPorDia[dia] = (conteoPorDia[dia] || 0) + 1;
+  const ConteoPorDia = {};
+  RegistrosFiltrados.forEach(Registro => {
+    const Dia = Registro.Fecha.day;
+    ConteoPorDia[Dia] = (ConteoPorDia[Dia] || 0) + 1;
   });
 
-  const conteoPorDiaOrdenadoArray = Object.entries(conteoPorDia)
-    .map(([dia, total]) => ({ dia: dia.toString().padStart(2, '0'), total }))
+  const ConteoPorDiaOrdenadoArray = Object.entries(ConteoPorDia)
+    .map(([Dia, Total]) => ({ dia: Dia.toString().padStart(2, '0'), total: Total }))
     .sort((a, b) => parseInt(a.dia) - parseInt(b.dia));
 
-  const mesesNombres = [
+  const MesesNombres = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
 
-  const registrosDelAnio = anio
-    ? registrosConFechaLocal.filter(registro =>
-        registro.Fecha.year === parseInt(anio)
+  const RegistrosDelAnio = Anio
+    ? RegistrosConFechaLocal.filter(Registro =>
+        Registro.Fecha.year === parseInt(Anio)
       )
     : [];
 
-  const conteoPorMes = new Array(12).fill(0);
+  const ConteoPorMes = new Array(12).fill(0);
 
-  registrosDelAnio.forEach(registro => {
-    const mesIndex = registro.Fecha.month - 1;
-    conteoPorMes[mesIndex]++;
+  RegistrosDelAnio.forEach(Registro => {
+    const MesIndex = Registro.Fecha.month - 1;
+    ConteoPorMes[MesIndex]++;
   });
 
-  const conteoPorMesFormateado = conteoPorMes.map((total, index) => ({
-    mes: (index + 1).toString().padStart(2, '0'),
-    nombre: mesesNombres[index],
-    total
+  const ConteoPorMesFormateado = ConteoPorMes.map((Total, Index) => ({
+    mes: (Index + 1).toString().padStart(2, '0'),
+    nombre: MesesNombres[Index],
+    total: Total
   }));
 
   return {
-    SolicitudTotalMes: registrosFiltrados.length,
-    SolicitudesDiaMes: conteoPorDiaOrdenadoArray,
-    SolicitudesPorMes: conteoPorMesFormateado
+    SolicitudTotalMes: RegistrosFiltrados.length,
+    SolicitudesDiaMes: ConteoPorDiaOrdenadoArray,
+    SolicitudesPorMes: ConteoPorMesFormateado
   };
 };
-
 
 const Listado = async () => {
   return await Modelo.findAll({ where: { Estatus:  [1,2] } });

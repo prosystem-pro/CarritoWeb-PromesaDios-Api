@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     TiempoPromedio: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.TIME,
       allowNull: false
     },
     Fecha: {
@@ -25,7 +25,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     NombreDiagrama: {
       type: DataTypes.STRING(64),
-      allowNull: false
+      allowNull: true
     },
     Estatus: {
       type: DataTypes.TINYINT,

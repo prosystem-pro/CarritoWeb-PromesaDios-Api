@@ -1,6 +1,16 @@
 const Servicio = require('../Servicios/ReporteRedSocialServicio');
 const ManejarError = require('../Utilidades/ErrorControladores');
 
+const ObtenerResumen = async (req, res) => {
+  try {
+    const { anio, mes } = req.params;
+    const Resumen = await Servicio.ObtenerResumen(anio, mes);
+    return res.json(Resumen);
+  } catch (error) {
+    return ManejarError(error, res, 'Error al obtener el resumen');
+  }
+};
+
 const Listado = async (req, res) => {
   try {
     const Objeto = await Servicio.Listado();
@@ -66,4 +76,4 @@ const Eliminar = async (req, res) => {
   }
 };
 
-module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar };
+module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar, ObtenerResumen };
