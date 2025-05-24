@@ -51,6 +51,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(32),
       allowNull: true
     },
+    TextoReporte: {
+      type: DataTypes.STRING(32),
+      allowNull: true
+    },
+    ColorTextextoReporte: {
+      type: DataTypes.STRING(32),
+      allowNull: true
+    },
     TextoBuscador: {
       type: DataTypes.STRING(128),
       allowNull: true
