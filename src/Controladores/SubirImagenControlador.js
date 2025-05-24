@@ -18,6 +18,7 @@ const Servicios = {
   CarritoPortada: require("../Servicios/CarritoPortadaServicio"), 
   MenuPortada: require("../Servicios/MenuPortadaServicio"), 
   LogoImagen: require("../Servicios/LogoImagenServicio"), 
+  LoginPortada:require("../Servicios/LoginPortadaServicio"), 
   
 };
 

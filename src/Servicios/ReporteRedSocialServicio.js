@@ -70,35 +70,37 @@ const ObtenerResumen = async (Anio, Mes) => {
     total: Total
   }));
 
-  // === 10. NUEVO: Top 3 redes sociales con más solicitudes ===
-  const ConteoPorRedSocial = {};
+// === 10. NUEVO: Top 3 redes sociales con más solicitudes ===
+const ConteoPorRedSocial = {};
 
-  RegistrosFiltrados.forEach(Registro => {
-    const Codigo = Registro.CodigoRedSocial;
-    if (Codigo) {
-      ConteoPorRedSocial[Codigo] = (ConteoPorRedSocial[Codigo] || 0) + 1;
-    }
+RegistrosFiltrados.forEach(Registro => {
+  const Codigo = Registro.CodigoRedSocial;
+  if (Codigo) {
+    ConteoPorRedSocial[Codigo] = (ConteoPorRedSocial[Codigo] || 0) + 1;
+  }
+});
+
+const TopCodigos = Object.entries(ConteoPorRedSocial)
+  .sort(([, a], [, b]) => b - a)
+  .slice(0, 3); // Top 3
+
+const TopRedesSociales = [];
+
+for (const [CodigoRed, Total] of TopCodigos) {
+  const Red = await ModeloRedSocial.findOne({
+    where: { CodigoRedSocial: parseInt(CodigoRed) }
   });
 
-  const TopCodigos = Object.entries(ConteoPorRedSocial)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 3); // Top 3
-
-  const TopRedesSociales = [];
-
-  for (const [CodigoRed, Total] of TopCodigos) {
-    const Red = await ModeloRedSocial.findOne({
-      where: { CodigoRedSocial: parseInt(CodigoRed) }
+  if (Red) {
+    TopRedesSociales.push({
+      codigo: CodigoRed,
+      nombre: Red.NombreRedSocial, // Nombre de la red
+      total: Total,
+      urlImagen: Red.UrlImagen       // Agregamos la imagen
     });
-
-    if (Red) {
-      TopRedesSociales.push({
-        codigo: CodigoRed,
-        nombre: Red.NombreRedSocial, // O el campo que represente el nombre
-        total: Total
-      });
-    }
   }
+}
+
 // === 11. NUEVO: Todas las redes sociales con total del mes ===
   const ResumenRedesSociales = [];
 

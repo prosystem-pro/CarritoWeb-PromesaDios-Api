@@ -54,16 +54,21 @@ const ObtenerResumen = async (Anio, Mes) => {
     .slice(0, 3);
 
   const TopProductos = await Promise.all(
-    TopCodigos.map(async ([CodigoProducto, CantidadVendida]) => {
-      const Producto = await ModeloProducto.findOne({ where: { [NombreModelo]: CodigoProducto } });
+  TopCodigos.map(async ([CodigoProducto, CantidadVendida]) => {
+    const Producto = await ModeloProducto.findOne({ 
+      where: { [NombreModelo]: CodigoProducto },
+      attributes: ['NombreProducto', 'UrlImagen'] // incluir Urlimagen aquí
+    });
 
-      return {
-        CodigoProducto: Number(CodigoProducto),
-        NombreProducto: Producto?.dataValues?.NombreProducto || 'Desconocido',
-        CantidadVendida,
-      };
-    })
-  );
+    return {
+      CodigoProducto: Number(CodigoProducto),
+      NombreProducto: Producto?.dataValues?.NombreProducto || 'Desconocido',
+      UrlImagen: Producto?.dataValues?.UrlImagen || null,
+      CantidadVendida,
+    };
+  })
+);
+
 
   // Total de solicitudes en el mes 
   const TotalSolicitudes = RegistrosFiltrados.length;
