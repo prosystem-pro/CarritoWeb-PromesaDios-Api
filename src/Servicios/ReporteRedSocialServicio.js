@@ -21,7 +21,6 @@ const ObtenerResumen = async (Anio, Mes) => {
     }
     return RegistroPlano;
   });
-  console.log('Registros con Fecha Local:', RegistrosConFechaLocal);
 
   // 3. Filtrar registros según el año y mes proporcionados
   const RegistrosFiltrados = (Anio && Mes)

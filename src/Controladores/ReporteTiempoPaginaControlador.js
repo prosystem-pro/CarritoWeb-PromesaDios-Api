@@ -47,12 +47,19 @@ const Buscar = async (req, res) => {
 
 const Crear = async (req, res) => {
   try {
-    await Servicio.Crear(req.body);
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+    const datosConIp = Array.isArray(req.body)
+      ? req.body.map(dato => ({ ...dato, DireccionIp: ip }))
+      : { ...req.body, DireccionIp: ip };
+
+    await Servicio.Crear(datosConIp);
     return res.status(201).json({ message: 'Se guardó el registro exitosamente.' });
   } catch (error) {
     return ManejarError(error, res, 'Error al crear el registro');
   }
 };
+
 
 const Editar = async (req, res) => {
   try {
