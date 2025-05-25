@@ -59,7 +59,7 @@ const SubirImagen = async (req, res) => {
 
       const UrlImagen = await SubirImagenAlmacenamiento(req.file, CarpetaPrincipal, SubCarpeta);
       Datos[NombreCampoImagen] = UrlImagen;
-      Entidad = await Servicio.Editar(Datos);
+      Entidad = await Servicio.Editar(CodigoPropio,Datos);
     }
 
     else if (CodigoVinculado && CodigoPropio) {
