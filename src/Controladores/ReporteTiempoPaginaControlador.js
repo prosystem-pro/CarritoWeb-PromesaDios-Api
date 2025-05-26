@@ -48,7 +48,6 @@ const Buscar = async (req, res) => {
 const Crear = async (req, res) => {
   try {
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-
     const datosConIp = Array.isArray(req.body)
       ? req.body.map(dato => ({ ...dato, DireccionIp: ip }))
       : { ...req.body, DireccionIp: ip };

@@ -90,18 +90,14 @@ const Buscar = async (TipoBusqueda, ValorBusqueda) => {
 };
 
 const Crear = async (Datos) => {
-  const EsArray = Array.isArray(Datos);
-  const ListaDatos = EsArray ? Datos : [Datos];
-
   const FechaActual = DateTime.now().setZone('America/Guatemala').toISO();
-  const DatosConFecha = ListaDatos.map(dato => ({
-    ...dato,
+  
+  const DatosConFecha = {
+    ...Datos,
     Fecha: FechaActual,
-  }));
+  };
 
-  return EsArray
-    ? await Modelo.bulkCreate(DatosConFecha)
-    : await Modelo.create(DatosConFecha[0]);
+  return await Modelo.create(DatosConFecha);
 };
 
 const Editar = async (Codigo, Datos) => {
