@@ -19,6 +19,7 @@ const Servicios = {
   MenuPortada: require("../Servicios/MenuPortadaServicio"), 
   LogoImagen: require("../Servicios/LogoImagenServicio"), 
   LoginPortada:require("../Servicios/LoginPortadaServicio"), 
+  RedSocialImagen:require("../Servicios/RedSocialImagenServicio"), 
   
 };
 

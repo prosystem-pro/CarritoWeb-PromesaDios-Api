@@ -37,12 +37,16 @@ const Buscar = async (req, res) => {
 
 const Crear = async (req, res) => {
   try {
-    await Servicio.Crear(req.body);
-    return res.status(201).json({ message: 'Se guardó el registro exitosamente.' });
+    const Datos = await Servicio.Crear(req.body); // Captura el registro creado
+    return res.status(201).json({
+    message: 'Registro creado correctamente.',
+    entidad: Datos,
+    });
   } catch (error) {
     return ManejarError(error, res, 'Error al crear el registro');
   }
 };
+
 
 const Editar = async (req, res) => {
   try {
