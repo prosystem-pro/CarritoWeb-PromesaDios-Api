@@ -13,6 +13,23 @@ const Producto = require(Path.join(RutaModelos, 'Producto.js'))(BaseDatos, Seque
 const ClasificacionProducto = require(Path.join(RutaModelos, 'ClasificacionProducto.js'))(BaseDatos, Sequelize.DataTypes);
 const ReporteProducto = require(Path.join(RutaModelos, 'ReporteProducto.js'))(BaseDatos, Sequelize.DataTypes);
 
+const RedSocial = require(Path.join(RutaModelos, 'RedSocial.js'))(BaseDatos, Sequelize.DataTypes);
+const RedSocialImagen = require(Path.join(RutaModelos, 'RedSocialImagen.js'))(BaseDatos, Sequelize.DataTypes);
+
+// RedSocial tiene muchas RedSocialImagen
+RedSocial.hasMany(RedSocialImagen, {
+  foreignKey: 'CodigoRedSocial',
+  as: 'Imagenes'
+});
+
+// RedSocialImagen pertenece a RedSocial
+RedSocialImagen.belongsTo(RedSocial, {
+  foreignKey: 'CodigoRedSocial',
+  as: 'RedSocial'
+});
+
+
+
 UsuarioModelo.belongsTo(RolModelo, { foreignKey: 'CodigoRol',as: 'Rol' });
 RolModelo.hasMany(UsuarioModelo, { foreignKey: 'CodigoRol' });
 
@@ -45,5 +62,7 @@ module.exports = {
   RecursoModelo,
   Producto,
   ClasificacionProducto,
-  ReporteProducto
+  ReporteProducto,
+  RedSocial,
+  RedSocialImagen
 };

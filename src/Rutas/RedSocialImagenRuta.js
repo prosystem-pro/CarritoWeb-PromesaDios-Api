@@ -1,6 +1,6 @@
 const Express = require('express');
 const Router = Express.Router();
-const Modelo = 'redSocial';
+const Modelo = 'redSocialimagen';
 const Tabla = 'RedSocial'
 const { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar } = require('../Controladores/RedSocialImagenControlador');
 const VerificarToken = require('../FuncionIntermedia/VerificarToken');

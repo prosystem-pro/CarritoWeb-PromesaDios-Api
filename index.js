@@ -1,5 +1,8 @@
 // const sequelize = require('./src/BaseDatos/ConexionBaseDatos');
 require('dotenv').config();
+
+require('./src/Relaciones/Relaciones'); 
+
 const App = require('./src/app');
 const PORT = process.env.PORT || 3000;
 

@@ -3,10 +3,8 @@ const ManejarError = require('../Utilidades/ErrorControladores');
 
 const Listado = async (req, res) => {
   try {
-    const Objeto = await Servicio.Listado();
-    if (Objeto && Objeto.length > 0) {
-      return res.json(Objeto);
-    }
+    const { ubicacion } = req.params; 
+    const Objeto = await Servicio.Listado(ubicacion);
     return res.json(Objeto || []);
   } catch (error) {
     return ManejarError(error, res, 'Error al obtener los registros');

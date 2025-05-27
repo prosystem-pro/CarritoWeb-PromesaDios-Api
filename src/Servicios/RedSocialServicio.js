@@ -1,14 +1,36 @@
 const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/RedSocial')(BaseDatos, Sequelize.DataTypes);
+const ModeloRedSocialImagen = require('../Modelos/RedSocialImagen')(BaseDatos, Sequelize.DataTypes);
+const { RedSocial, RedSocialImagen } = require('../Relaciones/Relaciones');
 const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
+
+const { Op } = require('sequelize');
 
 const NombreModelo= 'NombreRedSocial';
 const CodigoModelo= 'CodigoRedSocial'
 
-const Listado = async () => {
-  return await Modelo.findAll({ where: { Estatus:  [1,2] } });
+const Listado = async (ubicacionFiltro = '') => {
+  return await RedSocial.findAll({
+    where: { Estatus: [1, 2] },
+    include: [{
+      model: RedSocialImagen,
+      as: 'Imagenes',
+      required: false,
+      where: {
+        Estatus: 1,
+        ...(ubicacionFiltro && {
+          Ubicacion: {
+            [Op.like]: `%${ubicacionFiltro}%`
+          }
+        })
+      },
+      attributes: ['CodigoRedSocialImagen', 'UrlImagen', 'Ubicacion']
+    }]
+  });
 };
+
+
 
 const ObtenerPorCodigo = async (Codigo) => {
   return await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
@@ -38,24 +60,71 @@ const Crear = async (Datos) => {
   return await Modelo.create(Datos);
 };
 
+// const Editar = async (Codigo, Datos) => {
+//   const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
+//   if (!Objeto) return null;
+//   await Objeto.update(Datos);
+//   return Objeto;
+// };
 const Editar = async (Codigo, Datos) => {
   const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
   if (!Objeto) return null;
+
+  // Detectar si el Estatus cambió
+  const estatusAntes = Objeto.Estatus;
+  const estatusNuevo = Datos.Estatus;
+
+  // Actualizar el registro principal
   await Objeto.update(Datos);
+
+  // Si Estatus cambió y está definido, actualizamos los registros ligados
+  if (typeof estatusNuevo !== 'undefined' && estatusNuevo !== estatusAntes) {
+    await ModeloRedSocialImagen.update(
+      { Estatus: estatusNuevo },
+      { where: { CodigoRedSocial: Codigo } }
+    );
+  }
+
   return Objeto;
 };
 
+
 const Eliminar = async (Codigo) => {
   try {
-    const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
+    const Objeto = await RedSocial.findOne({
+      where: { [CodigoModelo]: Codigo },
+      include: [{
+        model: RedSocialImagen,
+        as: 'Imagenes',
+        where: { Estatus: 1 },
+        required: false
+      }]
+    });
+
     if (!Objeto) return null;
 
-    const UrlImagen = Objeto.UrlImagen;
-    await EliminarImagen(UrlImagen);
+    if (Objeto.Imagenes?.length > 0) {
+      for (const imagen of Objeto.Imagenes) {
+        try {
+          if (imagen.UrlImagen) {
+            await EliminarImagen(imagen.UrlImagen);
+          }
+          await imagen.destroy();
+        } catch (err) {
+          console.error(`Error al eliminar imagen con código ${imagen.CodigoRedSocialImagen}:`, err);
+        }
+      }
+    }
+
+    if (Objeto.UrlImagen) {
+      await EliminarImagen(Objeto.UrlImagen);
+    }
+
     await Objeto.destroy();
 
     return Objeto;
   } catch (error) {
+    console.error('Error en eliminación de red social:', error);
     throw error;
   }
 };

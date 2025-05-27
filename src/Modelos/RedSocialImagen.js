@@ -21,7 +21,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     Ubicacion: {
       type: DataTypes.STRING(64),
-      allowNull: false
+      allowNull: true
     },
     Estatus: {
       type: DataTypes.TINYINT,
