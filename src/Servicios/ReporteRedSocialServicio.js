@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/ReporteRedSocial')(BaseDatos, Sequelize.DataTypes);
 const ModeloRedSocial = require('../Modelos/RedSocial')(BaseDatos, Sequelize.DataTypes);
+const ModeloRedSocialImagen = require('../Modelos/RedSocialImagen')(BaseDatos, Sequelize.DataTypes);
 const { DateTime } = require('luxon');
 
 const NombreModelo= 'NombreDiagrama';
@@ -69,6 +70,7 @@ const ObtenerResumen = async (Anio, Mes) => {
     total: Total
   }));
 
+
 // === 10. NUEVO: Top 3 redes sociales con más solicitudes ===
 const ConteoPorRedSocial = {};
 
@@ -86,19 +88,31 @@ const TopCodigos = Object.entries(ConteoPorRedSocial)
 const TopRedesSociales = [];
 
 for (const [CodigoRed, Total] of TopCodigos) {
+  const Codigo = parseInt(CodigoRed);
+
+  // Buscar el nombre de la red
   const Red = await ModeloRedSocial.findOne({
-    where: { CodigoRedSocial: parseInt(CodigoRed) }
+    where: { CodigoRedSocial: Codigo }
+  });
+
+  // Buscar la imagen con ubicación 'Contacto'
+  const Imagen = await ModeloRedSocialImagen.findOne({
+    where: {
+      CodigoRedSocial: Codigo,
+      Ubicacion: 'Contacto'
+    }
   });
 
   if (Red) {
     TopRedesSociales.push({
       codigo: CodigoRed,
-      nombre: Red.NombreRedSocial, // Nombre de la red
+      nombre: Red.NombreRedSocial,
       total: Total,
-      urlImagen: Red.UrlImagen       // Agregamos la imagen
+      urlImagen: Imagen?.UrlImagen || null // Usa null si no encuentra imagen
     });
   }
 }
+
 
 // === 11. NUEVO: Todas las redes sociales con total del mes ===
   const ResumenRedesSociales = [];
