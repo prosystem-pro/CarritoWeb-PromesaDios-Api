@@ -3,7 +3,8 @@ const Cors = require('cors');
 const OpcionesCors = {
   origin: process.env.CORS_ALLOWED_ORIGINS.split(','),
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 };
 
 const ConfiguracionCors = () => Cors(OpcionesCors);
