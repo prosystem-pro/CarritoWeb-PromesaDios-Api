@@ -74,16 +74,38 @@ const ObtenerResumen = async (Anio, Mes) => {
   const TotalSolicitudes = RegistrosFiltrados.length;
 
   // Resumen por día del mes
-  const ResumenPorDia = RegistrosFiltrados.reduce((Acc, { _FechaLuxon }) => {
-    if (!_FechaLuxon) return Acc;
-    const Dia = _FechaLuxon.day.toString().padStart(2, '0');
-    Acc[Dia] = (Acc[Dia] || 0) + 1;
-    return Acc;
-  }, {});
+const ResumenPorDia = RegistrosFiltrados.reduce((Acc, { _FechaLuxon }) => {
+  if (!_FechaLuxon) return Acc;
+  const Dia = _FechaLuxon.day.toString().padStart(2, '0');
+  Acc[Dia] = (Acc[Dia] || 0) + 1;
+  return Acc;
+}, {});
 
-  const ResumenPorDiaOrdenado = Object.keys(ResumenPorDia)
-    .sort((A, B) => Number(A) - Number(B))
-    .map(Dia => ({ dia: Dia, cantidad: ResumenPorDia[Dia] }));
+// Determinar el número máximo de días del mes (usando Luxon, por ejemplo)
+const FechaReferencia = RegistrosFiltrados.length > 0 ? RegistrosFiltrados[0]._FechaLuxon : null;
+const DiasEnMes = FechaReferencia ? FechaReferencia.daysInMonth : 31; // fallback a 31 si no hay fecha
+
+// Generar arreglo de días (del 01 hasta el último día del mes)
+const ResumenPorDiaOrdenado = Array.from({ length: DiasEnMes }, (_, i) => {
+  const Dia = (i + 1).toString().padStart(2, '0');
+  return {
+    dia: Dia,
+    cantidad: ResumenPorDia[Dia] || 0
+  };
+});
+
+
+  // // Resumen por día del mes
+  // const ResumenPorDia = RegistrosFiltrados.reduce((Acc, { _FechaLuxon }) => {
+  //   if (!_FechaLuxon) return Acc;
+  //   const Dia = _FechaLuxon.day.toString().padStart(2, '0');
+  //   Acc[Dia] = (Acc[Dia] || 0) + 1;
+  //   return Acc;
+  // }, {});
+
+  // const ResumenPorDiaOrdenado = Object.keys(ResumenPorDia)
+  //   .sort((A, B) => Number(A) - Number(B))
+  //   .map(Dia => ({ dia: Dia, cantidad: ResumenPorDia[Dia] }));
 
   // Nombres de los meses
   const NombresMeses = [
@@ -91,26 +113,50 @@ const ObtenerResumen = async (Anio, Mes) => {
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
 
-  // Resumen anual por mes 
-  const RegistrosFiltradosAnio = RegistrosConFecha.filter(r => {
-    const Fecha = r._FechaLuxon;
-    return Fecha && Fecha.year === parseInt(Anio);
-  });
+  // // Resumen anual por mes 
+  // const RegistrosFiltradosAnio = RegistrosConFecha.filter(r => {
+  //   const Fecha = r._FechaLuxon;
+  //   return Fecha && Fecha.year === parseInt(Anio);
+  // });
 
-  const ResumenPorMes = RegistrosFiltradosAnio.reduce((Acc, { _FechaLuxon }) => {
-    if (!_FechaLuxon) return Acc;
-    const MesNum = _FechaLuxon.month.toString().padStart(2, '0');
-    Acc[MesNum] = (Acc[MesNum] || 0) + 1;
-    return Acc;
-  }, {});
+  // const ResumenPorMes = RegistrosFiltradosAnio.reduce((Acc, { _FechaLuxon }) => {
+  //   if (!_FechaLuxon) return Acc;
+  //   const MesNum = _FechaLuxon.month.toString().padStart(2, '0');
+  //   Acc[MesNum] = (Acc[MesNum] || 0) + 1;
+  //   return Acc;
+  // }, {});
 
-  const ResumenPorMesOrdenado = Object.keys(ResumenPorMes)
-    .sort((A, B) => Number(A) - Number(B))
-    .map(MesStr => ({
-      mes: MesStr,
-      nombreMes: NombresMeses[Number(MesStr) - 1],
-      cantidad: ResumenPorMes[MesStr],
-    }));
+  // const ResumenPorMesOrdenado = Object.keys(ResumenPorMes)
+  //   .sort((A, B) => Number(A) - Number(B))
+  //   .map(MesStr => ({
+  //     mes: MesStr,
+  //     nombreMes: NombresMeses[Number(MesStr) - 1],
+  //     cantidad: ResumenPorMes[MesStr],
+  //   }));
+// Resumen anual por mes 
+const RegistrosFiltradosAnio = RegistrosConFecha.filter(r => {
+  const Fecha = r._FechaLuxon;
+  return Fecha && Fecha.year === parseInt(Anio);
+});
+
+// Contador de registros por mes
+const ConteoPorMes = RegistrosFiltradosAnio.reduce((Acc, { _FechaLuxon }) => {
+  if (!_FechaLuxon) return Acc;
+  const MesNum = _FechaLuxon.month.toString().padStart(2, '0');
+  Acc[MesNum] = (Acc[MesNum] || 0) + 1;
+  return Acc;
+}, {});
+
+// Crear arreglo de los 12 meses con su conteo (o 0 si no hay)
+const ResumenPorMesOrdenado = Array.from({ length: 12 }, (_, i) => {
+  const MesNum = (i + 1).toString().padStart(2, '0');
+  return {
+    mes: MesNum,
+    nombreMes: NombresMeses[i],
+    cantidad: ConteoPorMes[MesNum] || 0
+  };
+});
+
 
   // ClasificaciónMes: Resumen por Clasificación de Producto
 

@@ -5,8 +5,8 @@ const ModeloRedSocial = require('../Modelos/RedSocial')(BaseDatos, Sequelize.Dat
 const ModeloRedSocialImagen = require('../Modelos/RedSocialImagen')(BaseDatos, Sequelize.DataTypes);
 const { DateTime } = require('luxon');
 
-const NombreModelo= 'NombreDiagrama';
-const CodigoModelo= 'CodigoReporteRedSocial'
+const NombreModelo = 'NombreDiagrama';
+const CodigoModelo = 'CodigoReporteRedSocial'
 
 const ObtenerResumen = async (Anio, Mes) => {
   // 1. Obtener todos los registros con Estatus 1 o 2
@@ -26,22 +26,42 @@ const ObtenerResumen = async (Anio, Mes) => {
   // 3. Filtrar registros según el año y mes proporcionados
   const RegistrosFiltrados = (Anio && Mes)
     ? RegistrosConFechaLocal.filter(Registro =>
-        Registro.Fecha.year === parseInt(Anio) &&
-        Registro.Fecha.month === parseInt(Mes)
-      )
+      Registro.Fecha.year === parseInt(Anio) &&
+      Registro.Fecha.month === parseInt(Mes)
+    )
     : RegistrosConFechaLocal;
 
-  // 4. Contar cuántos registros hay por cada día del mes filtrado
+  // // 4. Contar cuántos registros hay por cada día del mes filtrado
+  // const ConteoPorDia = {};
+  // RegistrosFiltrados.forEach(Registro => {
+  //   const Dia = Registro.Fecha.day;
+  //   ConteoPorDia[Dia] = (ConteoPorDia[Dia] || 0) + 1;
+  // });
+
+  // // 5. Convertir el conteo por día a array ordenado (del día 01 en adelante)
+  // const ConteoPorDiaOrdenadoArray = Object.entries(ConteoPorDia)
+  //   .map(([Dia, Total]) => ({ dia: Dia.toString().padStart(2, '0'), total: Total }))
+  //   .sort((a, b) => parseInt(a.dia) - parseInt(b.dia));
   const ConteoPorDia = {};
   RegistrosFiltrados.forEach(Registro => {
     const Dia = Registro.Fecha.day;
     ConteoPorDia[Dia] = (ConteoPorDia[Dia] || 0) + 1;
   });
 
-  // 5. Convertir el conteo por día a array ordenado (del día 01 en adelante)
-  const ConteoPorDiaOrdenadoArray = Object.entries(ConteoPorDia)
-    .map(([Dia, Total]) => ({ dia: Dia.toString().padStart(2, '0'), total: Total }))
-    .sort((a, b) => parseInt(a.dia) - parseInt(b.dia));
+  // Determinar el número máximo de días del mes (usando Luxon si está disponible)
+  const FechaReferencia = RegistrosFiltrados.length > 0 ? RegistrosFiltrados[0].Fecha : null;
+  const DiasEnMes = FechaReferencia ? FechaReferencia.daysInMonth : 31; // fallback a 31 si no hay datos
+
+  // Crear arreglo con todos los días del mes (del 01 al último día), asegurando 0 si no hubo datos
+  const ConteoPorDiaOrdenadoArray = Array.from({ length: DiasEnMes }, (_, i) => {
+    const DiaNum = i + 1;
+    const DiaStr = DiaNum.toString().padStart(2, '0');
+    return {
+      dia: DiaStr,
+      total: ConteoPorDia[DiaNum] || 0
+    };
+  });
+
 
   // 6. Nombres de los meses para el reporte anual
   const MesesNombres = [
@@ -52,8 +72,8 @@ const ObtenerResumen = async (Anio, Mes) => {
   // 7. Filtrar registros solo por año para conteo mensual
   const RegistrosDelAnio = Anio
     ? RegistrosConFechaLocal.filter(Registro =>
-        Registro.Fecha.year === parseInt(Anio)
-      )
+      Registro.Fecha.year === parseInt(Anio)
+    )
     : [];
 
   // 8. Contar cuántos registros hay por cada mes del año filtrado
@@ -71,50 +91,50 @@ const ObtenerResumen = async (Anio, Mes) => {
   }));
 
 
-// === 10. NUEVO: Top 3 redes sociales con más solicitudes ===
-const ConteoPorRedSocial = {};
+  // === 10. NUEVO: Top 3 redes sociales con más solicitudes ===
+  const ConteoPorRedSocial = {};
 
-RegistrosFiltrados.forEach(Registro => {
-  const Codigo = Registro.CodigoRedSocial;
-  if (Codigo) {
-    ConteoPorRedSocial[Codigo] = (ConteoPorRedSocial[Codigo] || 0) + 1;
-  }
-});
-
-const TopCodigos = Object.entries(ConteoPorRedSocial)
-  .sort(([, a], [, b]) => b - a)
-  .slice(0, 3); // Top 3
-
-const TopRedesSociales = [];
-
-for (const [CodigoRed, Total] of TopCodigos) {
-  const Codigo = parseInt(CodigoRed);
-
-  // Buscar el nombre de la red
-  const Red = await ModeloRedSocial.findOne({
-    where: { CodigoRedSocial: Codigo }
-  });
-
-  // Buscar la imagen con ubicación 'Contacto'
-  const Imagen = await ModeloRedSocialImagen.findOne({
-    where: {
-      CodigoRedSocial: Codigo,
-      Ubicacion: 'Contacto'
+  RegistrosFiltrados.forEach(Registro => {
+    const Codigo = Registro.CodigoRedSocial;
+    if (Codigo) {
+      ConteoPorRedSocial[Codigo] = (ConteoPorRedSocial[Codigo] || 0) + 1;
     }
   });
 
-  if (Red) {
-    TopRedesSociales.push({
-      codigo: CodigoRed,
-      nombre: Red.NombreRedSocial,
-      total: Total,
-      urlImagen: Imagen?.UrlImagen || null // Usa null si no encuentra imagen
+  const TopCodigos = Object.entries(ConteoPorRedSocial)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 3); // Top 3
+
+  const TopRedesSociales = [];
+
+  for (const [CodigoRed, Total] of TopCodigos) {
+    const Codigo = parseInt(CodigoRed);
+
+    // Buscar el nombre de la red
+    const Red = await ModeloRedSocial.findOne({
+      where: { CodigoRedSocial: Codigo }
     });
+
+    // Buscar la imagen con ubicación 'Contacto'
+    const Imagen = await ModeloRedSocialImagen.findOne({
+      where: {
+        CodigoRedSocial: Codigo,
+        Ubicacion: 'Contacto'
+      }
+    });
+
+    if (Red) {
+      TopRedesSociales.push({
+        codigo: CodigoRed,
+        nombre: Red.NombreRedSocial,
+        total: Total,
+        urlImagen: Imagen?.UrlImagen || null // Usa null si no encuentra imagen
+      });
+    }
   }
-}
 
 
-// === 11. NUEVO: Todas las redes sociales con total del mes ===
+  // === 11. NUEVO: Todas las redes sociales con total del mes ===
   const ResumenRedesSociales = [];
 
   for (const [CodigoRed, Total] of Object.entries(ConteoPorRedSocial)) {
@@ -143,7 +163,7 @@ for (const [CodigoRed, Total] of TopCodigos) {
 
 
 const Listado = async () => {
-  return await Modelo.findAll({ where: { Estatus:  [1,2] } });
+  return await Modelo.findAll({ where: { Estatus: [1, 2] } });
 };
 
 const ObtenerPorCodigo = async (Codigo) => {
@@ -154,10 +174,10 @@ const Buscar = async (TipoBusqueda, ValorBusqueda) => {
   switch (parseInt(TipoBusqueda)) {
     case 1:
       return await Modelo.findAll({
-        where: { [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` }, Estatus:  [1,2] }
+        where: { [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` }, Estatus: [1, 2] }
       });
     case 2:
-      return await Modelo.findAll({ where: { Estatus:  [1,2] }, order: [[NombreModelo, 'ASC']] });
+      return await Modelo.findAll({ where: { Estatus: [1, 2] }, order: [[NombreModelo, 'ASC']] });
     default:
       return null;
   }

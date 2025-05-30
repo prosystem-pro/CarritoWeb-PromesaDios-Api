@@ -26,15 +26,34 @@ const ObtenerResumen = async (Anio, Mes) => {
       )
     : RegistrosConFechaLocal;
 
-  const ConteoPorDia = {};
-  RegistrosFiltrados.forEach(Registro => {
-    const Dia = Registro.Fecha.day;
-    ConteoPorDia[Dia] = (ConteoPorDia[Dia] || 0) + 1;
-  });
+  // const ConteoPorDia = {};
+  // RegistrosFiltrados.forEach(Registro => {
+  //   const Dia = Registro.Fecha.day;
+  //   ConteoPorDia[Dia] = (ConteoPorDia[Dia] || 0) + 1;
+  // });
 
-  const ConteoPorDiaOrdenadoArray = Object.entries(ConteoPorDia)
-    .map(([Dia, Total]) => ({ dia: Dia.toString().padStart(2, '0'), total: Total }))
-    .sort((a, b) => parseInt(a.dia) - parseInt(b.dia));
+  // const ConteoPorDiaOrdenadoArray = Object.entries(ConteoPorDia)
+  //   .map(([Dia, Total]) => ({ dia: Dia.toString().padStart(2, '0'), total: Total }))
+  //   .sort((a, b) => parseInt(a.dia) - parseInt(b.dia));
+  // Inicializar el conteo de los días del mes (01-31) con 0
+const ConteoPorDia = {};
+for (let i = 1; i <= 31; i++) {
+  const DiaStr = i.toString().padStart(2, '0');
+  ConteoPorDia[DiaStr] = 0;
+}
+
+// Contar cuántos registros hay en cada día
+RegistrosFiltrados.forEach(Registro => {
+  const Dia = Registro.Fecha.day.toString().padStart(2, '0');
+  ConteoPorDia[Dia]++;
+});
+
+// Formatear conteo por día en array ordenado
+const ConteoPorDiaOrdenadoArray = Object.entries(ConteoPorDia)
+  .map(([Dia, Total]) => ({ dia: Dia, total: Total }))
+  .sort((a, b) => parseInt(a.dia) - parseInt(b.dia));
+
+
 
   const MesesNombres = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
