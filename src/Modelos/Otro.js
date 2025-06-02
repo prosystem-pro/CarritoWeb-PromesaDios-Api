@@ -23,6 +23,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(256),
       allowNull: true
     },
+    UrlImagen2: {
+      type: DataTypes.STRING(256),
+      allowNull: true
+    },
     Descripcion: {
       type: DataTypes.TEXT,
       allowNull: true
