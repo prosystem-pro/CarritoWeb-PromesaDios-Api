@@ -5,13 +5,14 @@ const Modelo = require('../Modelos/ReporteProducto')(BaseDatos, Sequelize.DataTy
 const ModeloProducto = require('../Modelos/Producto')(BaseDatos, Sequelize.DataTypes);
 const ModeloClasificacionProducto = require('../Modelos/ClasificacionProducto')(BaseDatos, Sequelize.DataTypes);
 const { DateTime } = require('luxon');
+const { v4: uuidv4 } = require('uuid');
 
 
-const NombreModelo= 'CodigoProducto';
-const CodigoModelo= 'CodigoReporteProducto'
+const NombreModelo = 'CodigoProducto';
+const CodigoModelo = 'CodigoReporteProducto'
 
 const Listado = async () => {
-  return await Modelo.findAll({ where: { Estatus:  [1,2] } });
+  return await Modelo.findAll({ where: { Estatus: [1, 2] } });
 };
 
 const ObtenerResumen = async (Anio, Mes) => {
@@ -54,58 +55,56 @@ const ObtenerResumen = async (Anio, Mes) => {
     .slice(0, 3);
 
   const TopProductos = await Promise.all(
-  TopCodigos.map(async ([CodigoProducto, CantidadVendida]) => {
-    const Producto = await ModeloProducto.findOne({ 
-      where: { [NombreModelo]: CodigoProducto },
-      attributes: ['NombreProducto', 'UrlImagen'] // incluir Urlimagen aquí
-    });
+    TopCodigos.map(async ([CodigoProducto, CantidadVendida]) => {
+      const Producto = await ModeloProducto.findOne({
+        where: { [NombreModelo]: CodigoProducto },
+        attributes: ['NombreProducto', 'UrlImagen'] // incluir Urlimagen aquí
+      });
 
-    return {
-      CodigoProducto: Number(CodigoProducto),
-      NombreProducto: Producto?.dataValues?.NombreProducto || 'Desconocido',
-      UrlImagen: Producto?.dataValues?.UrlImagen || null,
-      CantidadVendida,
-    };
-  })
-);
-
+      return {
+        CodigoProducto: Number(CodigoProducto),
+        NombreProducto: Producto?.dataValues?.NombreProducto || 'Desconocido',
+        UrlImagen: Producto?.dataValues?.UrlImagen || null,
+        CantidadVendida,
+      };
+    })
+  );
 
   // Total de solicitudes en el mes 
-  const TotalSolicitudes = RegistrosFiltrados.length;
-
-  // Resumen por día del mes
-const ResumenPorDia = RegistrosFiltrados.reduce((Acc, { _FechaLuxon }) => {
-  if (!_FechaLuxon) return Acc;
-  const Dia = _FechaLuxon.day.toString().padStart(2, '0');
-  Acc[Dia] = (Acc[Dia] || 0) + 1;
-  return Acc;
-}, {});
-
-// Determinar el número máximo de días del mes (usando Luxon, por ejemplo)
-const FechaReferencia = RegistrosFiltrados.length > 0 ? RegistrosFiltrados[0]._FechaLuxon : null;
-const DiasEnMes = FechaReferencia ? FechaReferencia.daysInMonth : 31; // fallback a 31 si no hay fecha
-
-// Generar arreglo de días (del 01 hasta el último día del mes)
-const ResumenPorDiaOrdenado = Array.from({ length: DiasEnMes }, (_, i) => {
-  const Dia = (i + 1).toString().padStart(2, '0');
-  return {
-    dia: Dia,
-    cantidad: ResumenPorDia[Dia] || 0
-  };
-});
+  const CodigosUnicos = new Set(RegistrosFiltrados.map(r => r.CodigoSolicitud));
+  const TotalSolicitudes = CodigosUnicos.size;
 
 
-  // // Resumen por día del mes
-  // const ResumenPorDia = RegistrosFiltrados.reduce((Acc, { _FechaLuxon }) => {
-  //   if (!_FechaLuxon) return Acc;
-  //   const Dia = _FechaLuxon.day.toString().padStart(2, '0');
-  //   Acc[Dia] = (Acc[Dia] || 0) + 1;
-  //   return Acc;
-  // }, {});
+  // Resumen por día del mes, pero contando SOLO solicitudes únicas
+  const ResumenPorDia = RegistrosFiltrados.reduce((Acc, { _FechaLuxon, CodigoSolicitud }) => {
+    if (!_FechaLuxon || !CodigoSolicitud) return Acc;
 
-  // const ResumenPorDiaOrdenado = Object.keys(ResumenPorDia)
-  //   .sort((A, B) => Number(A) - Number(B))
-  //   .map(Dia => ({ dia: Dia, cantidad: ResumenPorDia[Dia] }));
+    const Dia = _FechaLuxon.day.toString().padStart(2, '0');
+
+    // Asegúrate de que para cada día se maneje un Set para contar solicitudes únicas
+    if (!Acc[Dia]) {
+      Acc[Dia] = new Set();
+    }
+    Acc[Dia].add(CodigoSolicitud);
+
+    return Acc;
+  }, {});
+
+  // Determinar el número máximo de días del mes
+  const FechaReferencia = RegistrosFiltrados.length > 0 ? RegistrosFiltrados[0]._FechaLuxon : null;
+  const DiasEnMes = FechaReferencia ? FechaReferencia.daysInMonth : 31;
+
+  // Generar arreglo de días (01 - último día del mes) con la cantidad de solicitudes únicas
+  const ResumenPorDiaOrdenado = Array.from({ length: DiasEnMes }, (_, i) => {
+    const Dia = (i + 1).toString().padStart(2, '0');
+    const SolicitudesUnicas = ResumenPorDia[Dia] ? ResumenPorDia[Dia].size : 0;
+
+    return {
+      dia: Dia,
+      cantidad: SolicitudesUnicas
+    };
+  });
+
 
   // Nombres de los meses
   const NombresMeses = [
@@ -113,49 +112,38 @@ const ResumenPorDiaOrdenado = Array.from({ length: DiasEnMes }, (_, i) => {
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
 
-  // // Resumen anual por mes 
-  // const RegistrosFiltradosAnio = RegistrosConFecha.filter(r => {
-  //   const Fecha = r._FechaLuxon;
-  //   return Fecha && Fecha.year === parseInt(Anio);
-  // });
+  // Filtrar registros por año
+  const RegistrosFiltradosAnio = RegistrosConFecha.filter(r => {
+    const Fecha = r._FechaLuxon;
+    return Fecha && Fecha.year === parseInt(Anio);
+  });
 
-  // const ResumenPorMes = RegistrosFiltradosAnio.reduce((Acc, { _FechaLuxon }) => {
-  //   if (!_FechaLuxon) return Acc;
-  //   const MesNum = _FechaLuxon.month.toString().padStart(2, '0');
-  //   Acc[MesNum] = (Acc[MesNum] || 0) + 1;
-  //   return Acc;
-  // }, {});
+  // Contador de solicitudes únicas por mes
+  const ConteoPorMes = RegistrosFiltradosAnio.reduce((Acc, { _FechaLuxon, CodigoSolicitud }) => {
+    if (!_FechaLuxon || !CodigoSolicitud) return Acc;
 
-  // const ResumenPorMesOrdenado = Object.keys(ResumenPorMes)
-  //   .sort((A, B) => Number(A) - Number(B))
-  //   .map(MesStr => ({
-  //     mes: MesStr,
-  //     nombreMes: NombresMeses[Number(MesStr) - 1],
-  //     cantidad: ResumenPorMes[MesStr],
-  //   }));
-// Resumen anual por mes 
-const RegistrosFiltradosAnio = RegistrosConFecha.filter(r => {
-  const Fecha = r._FechaLuxon;
-  return Fecha && Fecha.year === parseInt(Anio);
-});
+    const MesNum = _FechaLuxon.month.toString().padStart(2, '0');
 
-// Contador de registros por mes
-const ConteoPorMes = RegistrosFiltradosAnio.reduce((Acc, { _FechaLuxon }) => {
-  if (!_FechaLuxon) return Acc;
-  const MesNum = _FechaLuxon.month.toString().padStart(2, '0');
-  Acc[MesNum] = (Acc[MesNum] || 0) + 1;
-  return Acc;
-}, {});
+    // Asegúrate de que cada mes tenga un Set para contar solicitudes únicas
+    if (!Acc[MesNum]) {
+      Acc[MesNum] = new Set();
+    }
+    Acc[MesNum].add(CodigoSolicitud);
 
-// Crear arreglo de los 12 meses con su conteo (o 0 si no hay)
-const ResumenPorMesOrdenado = Array.from({ length: 12 }, (_, i) => {
-  const MesNum = (i + 1).toString().padStart(2, '0');
-  return {
-    mes: MesNum,
-    nombreMes: NombresMeses[i],
-    cantidad: ConteoPorMes[MesNum] || 0
-  };
-});
+    return Acc;
+  }, {});
+
+  // Crear arreglo de los 12 meses con su conteo (o 0 si no hay)
+  const ResumenPorMesOrdenado = Array.from({ length: 12 }, (_, i) => {
+    const MesNum = (i + 1).toString().padStart(2, '0');
+    const SolicitudesUnicas = ConteoPorMes[MesNum] ? ConteoPorMes[MesNum].size : 0;
+
+    return {
+      mes: MesNum,
+      nombreMes: NombresMeses[i],
+      cantidad: SolicitudesUnicas
+    };
+  });
 
 
   // ClasificaciónMes: Resumen por Clasificación de Producto
@@ -231,10 +219,10 @@ const Buscar = async (TipoBusqueda, ValorBusqueda) => {
   switch (parseInt(TipoBusqueda)) {
     case 1:
       return await Modelo.findAll({
-        where: { [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` }, Estatus:  [1,2] }
+        where: { [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` }, Estatus: [1, 2] }
       });
     case 2:
-      return await Modelo.findAll({ where: { Estatus:  [1,2] }, order: [[NombreModelo, 'ASC']] });
+      return await Modelo.findAll({ where: { Estatus: [1, 2] }, order: [[NombreModelo, 'ASC']] });
     default:
       return null;
   }
@@ -244,15 +232,16 @@ const Crear = async (Datos) => {
   const EsArray = Array.isArray(Datos);
   const ListaDatos = EsArray ? Datos : [Datos];
 
+  const CodigoSolicitud = uuidv4();
   const FechaActual = DateTime.now().setZone('America/Guatemala').toISO();
-  const DatosConFecha = ListaDatos.map(dato => ({
+
+  const DatosConFechaYSolicitud = ListaDatos.map(dato => ({
     ...dato,
     Fecha: FechaActual,
+    CodigoSolicitud: CodigoSolicitud
   }));
 
-  return EsArray
-    ? await Modelo.bulkCreate(DatosConFecha)
-    : await Modelo.create(DatosConFecha[0]);
+  return await Modelo.bulkCreate(DatosConFechaYSolicitud);
 };
 
 

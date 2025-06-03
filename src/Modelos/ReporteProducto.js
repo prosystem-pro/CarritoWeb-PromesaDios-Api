@@ -31,6 +31,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: false
     },
+    CodigoSolicitud: {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
     Estatus: {
       type: DataTypes.TINYINT,
       allowNull: false,
