@@ -61,24 +61,16 @@ const Crear = async (Datos) => {
   return await Modelo.create(Datos);
 };
 
-// const Editar = async (Codigo, Datos) => {
-//   const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
-//   if (!Objeto) return null;
-//   await Objeto.update(Datos);
-//   return Objeto;
-// };
+
 const Editar = async (Codigo, Datos) => {
   const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
   if (!Objeto) return null;
 
-  // Detectar si el Estatus cambió
   const estatusAntes = Objeto.Estatus;
   const estatusNuevo = Datos.Estatus;
 
-  // Actualizar el registro principal
   await Objeto.update(Datos);
 
-  // Si Estatus cambió y está definido, actualizamos los registros ligados
   if (typeof estatusNuevo !== 'undefined' && estatusNuevo !== estatusAntes) {
     await ModeloRedSocialImagen.update(
       { Estatus: estatusNuevo },
@@ -92,12 +84,10 @@ const Editar = async (Codigo, Datos) => {
 
 const Eliminar = async (Codigo) => {
   try {
-    // 1️⃣ Borra registros relacionados en ReporteRedSocial
     await ReporteRedSocial.destroy({
       where: { CodigoRedSocial: Codigo }
     });
 
-    // 2️⃣ Busca el objeto RedSocial
     const Objeto = await RedSocial.findOne({
       where: { [CodigoModelo]: Codigo },
       include: [{
@@ -110,7 +100,6 @@ const Eliminar = async (Codigo) => {
 
     if (!Objeto) return null;
 
-    // 3️⃣ Elimina imágenes asociadas
     if (Objeto.Imagenes?.length > 0) {
       for (const imagen of Objeto.Imagenes) {
         try {
@@ -124,14 +113,10 @@ const Eliminar = async (Codigo) => {
       }
     }
 
-    // 4️⃣ Elimina la imagen principal de la RedSocial (si existe)
     if (Objeto.UrlImagen) {
       await EliminarImagen(Objeto.UrlImagen);
     }
-
-    // 5️⃣ Elimina el propio registro de RedSocial
     await Objeto.destroy();
-
     return Objeto;
   } catch (error) {
     console.error('Error en eliminación de red social:', error);
