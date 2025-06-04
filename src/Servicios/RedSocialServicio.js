@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/RedSocial')(BaseDatos, Sequelize.DataTypes);
 const ModeloRedSocialImagen = require('../Modelos/RedSocialImagen')(BaseDatos, Sequelize.DataTypes);
+const ReporteRedSocial = require('../Modelos/ReporteRedSocial')(BaseDatos, Sequelize.DataTypes);
 const { RedSocial, RedSocialImagen } = require('../Relaciones/Relaciones');
 const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
 
@@ -91,6 +92,12 @@ const Editar = async (Codigo, Datos) => {
 
 const Eliminar = async (Codigo) => {
   try {
+    // 1️⃣ Borra registros relacionados en ReporteRedSocial
+    await ReporteRedSocial.destroy({
+      where: { CodigoRedSocial: Codigo }
+    });
+
+    // 2️⃣ Busca el objeto RedSocial
     const Objeto = await RedSocial.findOne({
       where: { [CodigoModelo]: Codigo },
       include: [{
@@ -103,6 +110,7 @@ const Eliminar = async (Codigo) => {
 
     if (!Objeto) return null;
 
+    // 3️⃣ Elimina imágenes asociadas
     if (Objeto.Imagenes?.length > 0) {
       for (const imagen of Objeto.Imagenes) {
         try {
@@ -116,10 +124,12 @@ const Eliminar = async (Codigo) => {
       }
     }
 
+    // 4️⃣ Elimina la imagen principal de la RedSocial (si existe)
     if (Objeto.UrlImagen) {
       await EliminarImagen(Objeto.UrlImagen);
     }
 
+    // 5️⃣ Elimina el propio registro de RedSocial
     await Objeto.destroy();
 
     return Objeto;
@@ -128,6 +138,7 @@ const Eliminar = async (Codigo) => {
     throw error;
   }
 };
+
 
 
 module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar };
