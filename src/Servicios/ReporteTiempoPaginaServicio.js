@@ -1,25 +1,33 @@
 const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/ReporteTiempoPagina')(BaseDatos, Sequelize.DataTypes);
-const { DateTime } = require('luxon');
+const { DateTime, Duration } = require('luxon');
 
 
-const NombreModelo= 'NombreDiagrama';
-const CodigoModelo= 'CodigoReporteTiempoPagina'
+const NombreModelo = 'NombreDiagrama';
+const CodigoModelo = 'CodigoReporteTiempoPagina'
 
 const ObtenerResumen = async (Anio, Mes) => {
-  const Registros = await Modelo.findAll({ where: { Estatus: [1, 2] } });
+  // Traer todos los registros con estatus válido
+  const Registros = await Modelo.findAll({
+    where: { Estatus: [1, 2] },
+  });
 
+  // Convertir fechas a zona horaria local (opcional, solo para el filtro)
   const RegistrosConFechaLocal = Registros.map(Registro => {
     const RegistroPlano = Registro.toJSON();
     if (RegistroPlano.Fecha) {
-      RegistroPlano.Fecha = DateTime
-        .fromJSDate(RegistroPlano.Fecha)
-        .setZone('America/Guatemala');
+      const fecha = new Date(RegistroPlano.Fecha);
+      RegistroPlano.Fecha = {
+        year: fecha.getFullYear(),
+        month: fecha.getMonth() + 1,
+        day: fecha.getDate()
+      };
     }
     return RegistroPlano;
   });
 
+  // Filtrar por año y mes
   const RegistrosFiltrados = (Anio && Mes)
     ? RegistrosConFechaLocal.filter(Registro =>
         Registro.Fecha.year === parseInt(Anio) &&
@@ -27,66 +35,49 @@ const ObtenerResumen = async (Anio, Mes) => {
       )
     : RegistrosConFechaLocal;
 
-  // const ConteoPorDia = {};
-  // RegistrosFiltrados.forEach(Registro => {
-  //   const Dia = Registro.Fecha.day;
-  //   ConteoPorDia[Dia] = (ConteoPorDia[Dia] || 0) + 1;
-  // });
+  // Sumar el campo TiempoPromedio de todos los registros
+  let totalSegundos = 0;
+  RegistrosFiltrados.forEach(Registro => {
+    const tiempo = Registro.TiempoPromedio;
 
-  // const ConteoPorDiaOrdenadoArray = Object.entries(ConteoPorDia)
-  //   .map(([Dia, Total]) => ({ dia: Dia.toString().padStart(2, '0'), total: Total }))
-  //   .sort((a, b) => parseInt(a.dia) - parseInt(b.dia));
-  // Inicializar el conteo de los días del mes (01-31) con 0
-const ConteoPorDia = {};
-for (let i = 1; i <= 31; i++) {
-  const DiaStr = i.toString().padStart(2, '0');
-  ConteoPorDia[DiaStr] = 0;
-}
-
-// Contar cuántos registros tiene cada día
-RegistrosFiltrados.forEach(Registro => {
-  const Dia = Registro.Fecha.day.toString().padStart(2, '0');
-  ConteoPorDia[Dia]++;
-});
-
-// Formatear conteo por día en array ordenado
-const ConteoPorDiaOrdenadoArray = Object.entries(ConteoPorDia)
-  .map(([Dia, Total]) => ({ dia: Dia, total: Total }))
-  .sort((a, b) => parseInt(a.dia) - parseInt(b.dia));
-
-  const MesesNombres = [
-    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-  ];
-
-  const RegistrosDelAnio = Anio
-    ? RegistrosConFechaLocal.filter(Registro =>
-        Registro.Fecha.year === parseInt(Anio)
-      )
-    : [];
-
-  const ConteoPorMes = new Array(12).fill(0);
-
-  RegistrosDelAnio.forEach(Registro => {
-    const MesIndex = Registro.Fecha.month - 1;
-    ConteoPorMes[MesIndex]++;
+    if (tiempo) {
+      // Convertir a string y dividir por :
+      const partes = tiempo.toString().split(':');
+      if (partes.length === 3) {
+        const horas = parseInt(partes[0]) || 0;
+        const minutos = parseInt(partes[1]) || 0;
+        const segundos = parseFloat(partes[2]) || 0;
+        totalSegundos += (horas * 3600) + (minutos * 60) + segundos;
+      }
+    }
   });
 
-  const ConteoPorMesFormateado = ConteoPorMes.map((Total, Index) => ({
-    mes: (Index + 1).toString().padStart(2, '0'),
-    nombre: MesesNombres[Index],
-    total: Total
-  }));
+  // Convertir totalSegundos a días, horas, minutos, segundos
+  const dias = Math.floor(totalSegundos / 86400);
+  const restoDespuesDias = totalSegundos % 86400;
+
+  const horas = Math.floor(restoDespuesDias / 3600);
+  const restoDespuesHoras = restoDespuesDias % 3600;
+
+  const minutos = Math.floor(restoDespuesHoras / 60);
+  const segundos = Math.floor(restoDespuesHoras % 60);
 
   return {
-    SolicitudTotalMes: RegistrosFiltrados.length,
-    SolicitudesDiaMes: ConteoPorDiaOrdenadoArray,
-    SolicitudesPorMes: ConteoPorMesFormateado
+    TotalTiempo: {
+      dias,
+      horas,
+      minutos,
+      segundos
+    }
   };
 };
 
+module.exports = {
+  ObtenerResumen
+};
+
 const Listado = async () => {
-  return await Modelo.findAll({ where: { Estatus:  [1,2] } });
+  return await Modelo.findAll({ where: { Estatus: [1, 2] } });
 };
 
 const ObtenerPorCodigo = async (Codigo) => {
@@ -97,10 +88,10 @@ const Buscar = async (TipoBusqueda, ValorBusqueda) => {
   switch (parseInt(TipoBusqueda)) {
     case 1:
       return await Modelo.findAll({
-        where: { [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` }, Estatus:  [1,2] }
+        where: { [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` }, Estatus: [1, 2] }
       });
     case 2:
-      return await Modelo.findAll({ where: { Estatus:  [1,2] }, order: [[NombreModelo, 'ASC']] });
+      return await Modelo.findAll({ where: { Estatus: [1, 2] }, order: [[NombreModelo, 'ASC']] });
     default:
       return null;
   }
@@ -108,7 +99,7 @@ const Buscar = async (TipoBusqueda, ValorBusqueda) => {
 
 const Crear = async (Datos) => {
   const FechaActual = DateTime.now().setZone('America/Guatemala').toISO();
-  
+
   const DatosConFecha = {
     ...Datos,
     Fecha: FechaActual,
