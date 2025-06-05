@@ -96,7 +96,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     Urlvideo: {
-      type: DataTypes.STRING(128),
+      type: DataTypes.STRING(512),
       allowNull: true
     },
     Estatus: {
