@@ -3,7 +3,8 @@ const ManejarError = require('../Utilidades/ErrorControladores');
 
 const Listado = async (req, res) => {
   try {
-    const Objeto = await Servicio.Listado();
+    const Usuario = req.Datos;
+    const Objeto = await Servicio.Listado(Usuario);
     if (Objeto && Objeto.length > 0) {
       return res.json(Objeto);
     }

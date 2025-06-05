@@ -5,8 +5,9 @@ const Tabla = 'Producto'
 const { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar, ListadoPorClasificacion } = require('../Controladores/ProductoControlador');
 const VerificarToken = require('../FuncionIntermedia/VerificarToken');
 const VerificarPermisos = require('../FuncionIntermedia/VerificarPermisos'); 
+const ObtenerInformacionTokenRuta = require('../FuncionIntermedia/ObtenerInformacionTokenRuta'); 
 
-Router.get(`/${Modelo}/listado`, Listado);
+Router.get(`/${Modelo}/listado`,ObtenerInformacionTokenRuta, Listado);
 Router.get(`/${Modelo}/:Codigo`,VerificarToken,VerificarPermisos('Ver',Tabla), ObtenerPorCodigo);
 Router.get(`/${Modelo}/buscar/:TipoBusqueda/:ValorBusqueda`, Buscar);
 Router.post(`/${Modelo}/crear`, VerificarToken,VerificarPermisos('Crear',Tabla),Crear);

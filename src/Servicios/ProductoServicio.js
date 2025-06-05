@@ -8,8 +8,17 @@ const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
 const NombreModelo= 'NombreProducto';
 const CodigoModelo= 'CodigoProducto'
 
-const Listado = async () => {
-  return await Modelo.findAll({ where: { Estatus:  [1,2] } });
+const Listado = async (Usuario) => {
+
+  let estatusPermitido = [1];
+
+  if (Usuario && (Usuario.NombreRol === 'Administrador' || Usuario.SuperAdmin === 1)) {
+    estatusPermitido = [1, 2];
+  }
+
+  return await Modelo.findAll({
+    where: { Estatus: estatusPermitido }
+  });
 };
 
 const ObtenerPorCodigo = async (Codigo) => {
