@@ -3,11 +3,11 @@ const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/Otro')(BaseDatos, Sequelize.DataTypes);
 const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
 
-const NombreModelo= 'NombreOtro';
-const CodigoModelo= 'CodigoOtro'
+const NombreModelo = 'NombreOtro';
+const CodigoModelo = 'CodigoOtro'
 
 const Listado = async () => {
-  return await Modelo.findAll({ where: { Estatus:  [1,2] } });
+  return await Modelo.findAll({ where: { Estatus: [1, 2] } });
 };
 
 const ObtenerPorCodigo = async (Codigo) => {
@@ -18,10 +18,10 @@ const Buscar = async (TipoBusqueda, ValorBusqueda) => {
   switch (parseInt(TipoBusqueda)) {
     case 1:
       return await Modelo.findAll({
-        where: { [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` }, Estatus:  [1,2] }
+        where: { [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` }, Estatus: [1, 2] }
       });
     case 2:
-      return await Modelo.findAll({ where: { Estatus:  [1,2] }, order: [[NombreModelo, 'ASC']] });
+      return await Modelo.findAll({ where: { Estatus: [1, 2] }, order: [[NombreModelo, 'ASC']] });
     default:
       return null;
   }
@@ -43,12 +43,27 @@ const Eliminar = async (Codigo) => {
     const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
     if (!Objeto) return null;
 
-    const UrlImagen = Objeto.UrlImagen;
-    await EliminarImagen(UrlImagen);
-    await Objeto.destroy();
+    const CamposImagen = [
+      'UrlImagen',
+      'UrlImagen2'
+    ];
 
+    for (const campo of CamposImagen) {
+      const url = Objeto[campo];
+      if (url) {
+        try {
+          await EliminarImagen(url);
+        } catch (error) {
+          console.warn(`No se pudo eliminar la imagen del campo "${campo}": ${error.message}`);
+        }
+      }
+    }
+
+    await Objeto.destroy();
     return Objeto;
+
   } catch (error) {
+    console.error("Error en la función Eliminar:", error.message);
     throw error;
   }
 };
