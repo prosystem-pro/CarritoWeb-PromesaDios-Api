@@ -65,7 +65,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(32),
       allowNull: true
     },
-    UrlImagenComoLlegar: {
+    UrlImagenHorario: {
       type: DataTypes.STRING(256),
       allowNull: true
     },
