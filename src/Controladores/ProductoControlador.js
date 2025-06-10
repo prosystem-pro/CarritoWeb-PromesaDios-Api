@@ -29,12 +29,17 @@ const Buscar = async (req, res) => {
   try {
     const { TipoBusqueda, ValorBusqueda } = req.params;
     const Objeto = await Servicio.Buscar(TipoBusqueda, ValorBusqueda);
-    if (Objeto && Objeto.length > 0) return res.json(Objeto);
-    return res.status(404).json({ message: 'No se encontraron registros' });
+
+    if (Objeto && Objeto.length > 0) {
+      return res.json(Objeto);
+    } else {
+      return res.json([]); 
+    }
   } catch (error) {
     return ManejarError(error, res, 'Error al realizar la búsqueda');
   }
 };
+
 
 const Crear = async (req, res) => {
   try {
