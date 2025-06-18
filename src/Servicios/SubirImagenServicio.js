@@ -1,6 +1,7 @@
 const { Almacenamiento } = require("../Configuracion/FirebaseConfiguracion");
 const { v4: GenerarUuid } = require("uuid");
 
+
 const SubirImagenAlmacenamiento = (Archivo, CarpetaPrincipal, SubCarpeta) => {
   return new Promise((Resolver, Rechazar) => {
     if (!CarpetaPrincipal || !SubCarpeta) {
@@ -14,14 +15,13 @@ const SubirImagenAlmacenamiento = (Archivo, CarpetaPrincipal, SubCarpeta) => {
       metadata: { contentType: Archivo.mimetype },
     });
 
-    Flujo.on("error", (Error) => {
+    Flujo.on("error", () => {
       Rechazar(new Error("Error al subir la imagen"));
     });
 
     Flujo.on("finish", async () => {
       await ArchivoSubido.makePublic();
-      const Url = `https://storage.googleapis.com/${Almacenamiento.name}/${NombreArchivo}`;
-      Resolver(Url);
+      Resolver(`/${NombreArchivo}`); 
     });
 
     Flujo.end(Archivo.buffer);
