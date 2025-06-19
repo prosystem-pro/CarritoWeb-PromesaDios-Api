@@ -86,7 +86,7 @@ const SubirImagen = async (req, res) => {
     return res.status(201).json({
       Mensaje: `${SubCarpeta} procesado con éxito`,
       Entidad,
-      UrlImagenPublica: UrlPublica 
+      UrlImagenPublica: UrlPublica
     });
   } catch (error) {
     return ManejarError(error, res, "Error al procesar la imagen");

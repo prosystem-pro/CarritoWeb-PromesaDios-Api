@@ -2,23 +2,30 @@ const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/Producto')(BaseDatos, Sequelize.DataTypes);
 const ReporteProducto = require('../Modelos/ReporteProducto')(BaseDatos, Sequelize.DataTypes);
-
 const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
+const { ConstruirUrlImagen } = require('../Utilidades/ConstruirUrlImagen'); 
 
 const NombreModelo= 'NombreProducto';
 const CodigoModelo= 'CodigoProducto'
 
 const Listado = async (Usuario) => {
-
   let estatusPermitido = [1];
 
   if (Usuario && (Usuario.NombreRol === 'Administrador' || Usuario.SuperAdmin === 1)) {
     estatusPermitido = [1, 2];
   }
 
-  return await Modelo.findAll({
+  const Registros = await Modelo.findAll({
     where: { Estatus: estatusPermitido }
   });
+
+  const Resultado = Registros.map(r => {
+    const Dato = r.toJSON();
+    Dato.UrlImagen = ConstruirUrlImagen(Dato.UrlImagen); 
+    return Dato;
+  });
+
+  return Resultado;
 };
 
 const ObtenerPorCodigo = async (Codigo) => {
@@ -74,12 +81,20 @@ const Eliminar = async (Codigo) => {
 
 
 const ListadoPorClasificacion = async (Codigo) => {
-  return await Modelo.findAll({
+  const Registros = await Modelo.findAll({
     where: {
       CodigoClasificacionProducto: Codigo,
       Estatus: [1, 2]
     }
   });
+
+  const Resultado = Registros.map(r => {
+    const Dato = r.toJSON();
+    Dato.UrlImagen = ConstruirUrlImagen(Dato.UrlImagen); 
+    return Dato;
+  });
+
+  return Resultado;
 };
 
 module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar, ListadoPorClasificacion };

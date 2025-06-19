@@ -4,12 +4,25 @@ const Modelo = require('../Modelos/ClasificacionProducto')(BaseDatos, Sequelize.
 const Producto = require('../Modelos/Producto')(BaseDatos, Sequelize.DataTypes);
 const ReporteProducto = require('../Modelos/ReporteProducto')(BaseDatos, Sequelize.DataTypes);
 const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
+const { ConstruirUrlImagen } = require('../Utilidades/ConstruirUrlImagen');
 
 const NombreModelo = 'NombreClasificacionProducto';
 const CodigoModelo = 'CodigoClasificacionProducto'
 
 const Listado = async () => {
-  return await Modelo.findAll({ where: { Estatus: [1, 2] } });
+  const Registros = await Modelo.findAll({ where: { Estatus: [1, 2] } });
+
+  const Resultado = Registros.map(r => {
+    const Dato = r.toJSON();
+
+    if (Dato.UrlImagen) {
+      Dato.UrlImagen = ConstruirUrlImagen(Dato.UrlImagen);
+    }
+
+    return Dato;
+  });
+
+  return Resultado;
 };
 
 const ObtenerPorCodigo = async (Codigo) => {

@@ -5,6 +5,7 @@ const ModeloRedSocialImagen = require('../Modelos/RedSocialImagen')(BaseDatos, S
 const ReporteRedSocial = require('../Modelos/ReporteRedSocial')(BaseDatos, Sequelize.DataTypes);
 const { RedSocial, RedSocialImagen } = require('../Relaciones/Relaciones');
 const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
+const { ConstruirUrlImagen } = require('../Utilidades/ConstruirUrlImagen');
 
 const { Op } = require('sequelize');
 
@@ -12,7 +13,7 @@ const NombreModelo= 'NombreRedSocial';
 const CodigoModelo= 'CodigoRedSocial'
 
 const Listado = async (ubicacionFiltro = '') => {
-  return await RedSocial.findAll({
+  const Registros = await RedSocial.findAll({
     where: { Estatus: [1, 2] },
     include: [{
       model: RedSocialImagen,
@@ -29,8 +30,22 @@ const Listado = async (ubicacionFiltro = '') => {
       attributes: ['CodigoRedSocialImagen', 'UrlImagen', 'Ubicacion']
     }]
   });
-};
 
+  const Resultado = Registros.map(r => {
+    const Dato = r.toJSON();
+
+    if (Dato.Imagenes && Array.isArray(Dato.Imagenes)) {
+      Dato.Imagenes = Dato.Imagenes.map(img => {
+        img.UrlImagen = ConstruirUrlImagen(img.UrlImagen);
+        return img;
+      });
+    }
+
+    return Dato;
+  });
+
+  return Resultado;
+};
 
 
 const ObtenerPorCodigo = async (Codigo) => {

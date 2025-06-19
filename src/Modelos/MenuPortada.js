@@ -17,7 +17,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     UrlImagenNavbar: {
       type: DataTypes.STRING(256),
-      allowNull: false
+      allowNull: true
     },
     UrlImagenPortadaIzquierdo: {
       type: DataTypes.STRING(256),
@@ -37,7 +37,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     UrlImagenMenu: {
       type: DataTypes.STRING(256),
-      allowNull: false
+      allowNull: true
     },
     ColorContornoImagenClasificacion: {
       type: DataTypes.STRING(32),

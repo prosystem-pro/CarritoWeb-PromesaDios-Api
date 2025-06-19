@@ -2,16 +2,35 @@ const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/CarruselImagen')(BaseDatos, Sequelize.DataTypes);
 const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
+const { ConstruirUrlImagen } = require('../Utilidades/ConstruirUrlImagen');
 
 const NombreModelo= 'Orden';
 const CodigoModelo= 'CodigoCarruselImagen'
 
 const Listado = async () => {
-  return await Modelo.findAll({ where: { Estatus: [1,2] } });
+  const Registros = await Modelo.findAll({ where: { Estatus: [1, 2] } });
+
+  const Resultado = Registros.map(r => {
+    const Dato = r.toJSON();
+
+    Dato.UrlImagen = ConstruirUrlImagen(Dato.UrlImagen);
+
+    return Dato;
+  });
+
+  return Resultado;
 };
 
 const ObtenerPorCodigo = async (Codigo) => {
-  return await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
+  const Registro = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
+
+  if (!Registro) return null;
+
+  const Dato = Registro.toJSON();
+
+  Dato.UrlImagen = ConstruirUrlImagen(Dato.UrlImagen);
+
+  return Dato;
 };
 
 const Buscar = async (TipoBusqueda, ValorBusqueda) => {
@@ -54,8 +73,16 @@ const Eliminar = async (Codigo) => {
 };
 
 const ListadoPorCarrusel = async (CodigoCarrusel) => {
-  return await Modelo.findAll({
+  const Registros = await Modelo.findAll({
     where: { CodigoCarrusel: CodigoCarrusel, Estatus: [1, 2] }
   });
+
+  const Resultado = Registros.map(r => {
+    const Dato = r.toJSON();
+    Dato.UrlImagen = ConstruirUrlImagen(Dato.UrlImagen);
+    return Dato;
+  });
+
+  return Resultado;
 };
 module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar, ListadoPorCarrusel };

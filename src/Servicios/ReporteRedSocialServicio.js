@@ -3,6 +3,7 @@ const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/ReporteRedSocial')(BaseDatos, Sequelize.DataTypes);
 const ModeloRedSocial = require('../Modelos/RedSocial')(BaseDatos, Sequelize.DataTypes);
 const ModeloRedSocialImagen = require('../Modelos/RedSocialImagen')(BaseDatos, Sequelize.DataTypes);
+const { ConstruirUrlImagen } = require('../Utilidades/ConstruirUrlImagen');
 const { DateTime } = require('luxon');
 
 const NombreModelo = 'NombreDiagrama';
@@ -31,17 +32,6 @@ const ObtenerResumen = async (Anio, Mes) => {
     )
     : RegistrosConFechaLocal;
 
-  // // 4. Contar cuántos registros hay por cada día del mes filtrado
-  // const ConteoPorDia = {};
-  // RegistrosFiltrados.forEach(Registro => {
-  //   const Dia = Registro.Fecha.day;
-  //   ConteoPorDia[Dia] = (ConteoPorDia[Dia] || 0) + 1;
-  // });
-
-  // // 5. Convertir el conteo por día a array ordenado (del día 01 en adelante)
-  // const ConteoPorDiaOrdenadoArray = Object.entries(ConteoPorDia)
-  //   .map(([Dia, Total]) => ({ dia: Dia.toString().padStart(2, '0'), total: Total }))
-  //   .sort((a, b) => parseInt(a.dia) - parseInt(b.dia));
   const ConteoPorDia = {};
   RegistrosFiltrados.forEach(Registro => {
     const Dia = Registro.Fecha.day;
@@ -94,44 +84,47 @@ const ObtenerResumen = async (Anio, Mes) => {
   // === 10. NUEVO: Top 3 redes sociales con más solicitudes ===
   const ConteoPorRedSocial = {};
 
-  RegistrosFiltrados.forEach(Registro => {
-    const Codigo = Registro.CodigoRedSocial;
-    if (Codigo) {
-      ConteoPorRedSocial[Codigo] = (ConteoPorRedSocial[Codigo] || 0) + 1;
+RegistrosFiltrados.forEach(Registro => {
+  const Codigo = Registro.CodigoRedSocial;
+  if (Codigo) {
+    ConteoPorRedSocial[Codigo] = (ConteoPorRedSocial[Codigo] || 0) + 1;
+  }
+});
+
+const TopCodigos = Object.entries(ConteoPorRedSocial)
+  .sort(([, a], [, b]) => b - a)
+  .slice(0, 3); // Top 3
+
+const TopRedesSociales = [];
+
+for (const [CodigoRed, Total] of TopCodigos) {
+  const Codigo = parseInt(CodigoRed);
+
+  // Buscar el nombre de la red
+  const Red = await ModeloRedSocial.findOne({
+    where: { CodigoRedSocial: Codigo }
+  });
+
+  // Buscar la imagen con ubicación 'Contacto'
+  const Imagen = await ModeloRedSocialImagen.findOne({
+    where: {
+      CodigoRedSocial: Codigo,
+      Ubicacion: 'Contacto'
     }
   });
 
-  const TopCodigos = Object.entries(ConteoPorRedSocial)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 3); // Top 3
+  const UrlImagenCruda = Imagen?.UrlImagen || null;
+  const UrlImagen = ConstruirUrlImagen(UrlImagenCruda);
 
-  const TopRedesSociales = [];
-
-  for (const [CodigoRed, Total] of TopCodigos) {
-    const Codigo = parseInt(CodigoRed);
-
-    // Buscar el nombre de la red
-    const Red = await ModeloRedSocial.findOne({
-      where: { CodigoRedSocial: Codigo }
+  if (Red) {
+    TopRedesSociales.push({
+      codigo: CodigoRed,
+      nombre: Red.NombreRedSocial,
+      total: Total,
+      urlImagen: UrlImagen
     });
-
-    // Buscar la imagen con ubicación 'Contacto'
-    const Imagen = await ModeloRedSocialImagen.findOne({
-      where: {
-        CodigoRedSocial: Codigo,
-        Ubicacion: 'Contacto'
-      }
-    });
-
-    if (Red) {
-      TopRedesSociales.push({
-        codigo: CodigoRed,
-        nombre: Red.NombreRedSocial,
-        total: Total,
-        urlImagen: Imagen?.UrlImagen || null // Usa null si no encuentra imagen
-      });
-    }
   }
+}
 
 
   // === 11. NUEVO: Todas las redes sociales con total del mes ===

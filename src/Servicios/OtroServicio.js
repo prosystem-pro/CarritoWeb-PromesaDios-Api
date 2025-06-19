@@ -2,12 +2,22 @@ const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/Otro')(BaseDatos, Sequelize.DataTypes);
 const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
+const { ConstruirUrlImagen } = require('../Utilidades/ConstruirUrlImagen');
 
 const NombreModelo = 'NombreOtro';
 const CodigoModelo = 'CodigoOtro'
 
 const Listado = async () => {
-  return await Modelo.findAll({ where: { Estatus: [1, 2] } });
+  const Registros = await Modelo.findAll({ where: { Estatus: [1, 2] } });
+
+  const Resultado = Registros.map(r => {
+    const Dato = r.toJSON();
+    Dato.UrlImagen = ConstruirUrlImagen(Dato.UrlImagen);
+    Dato.UrlImagen2 = ConstruirUrlImagen(Dato.UrlImagen2);
+    return Dato;
+  });
+
+  return Resultado;
 };
 
 const ObtenerPorCodigo = async (Codigo) => {

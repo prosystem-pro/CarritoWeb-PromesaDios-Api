@@ -2,17 +2,45 @@ const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/EmpresaPortada')(BaseDatos, Sequelize.DataTypes);
 const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
+const { ConstruirUrlImagen } = require('../Utilidades/ConstruirUrlImagen');
 
 const NombreModelo= 'TituloQuienesSomos';
 const CodigoModelo= 'CodigoEmpresaPortada'
 
 const Listado = async () => {
-  return await Modelo.findAll({ where: { Estatus: [1,2] } });
+  const Registros = await Modelo.findAll({ where: { Estatus: [1, 2] } });
+
+  const Resultado = Registros.map(r => {
+    const Dato = r.toJSON();
+
+    Dato.UrlImagenPortada = ConstruirUrlImagen(Dato.UrlImagenPortada);
+    Dato.UrlImagenPortadaIzquierdo = ConstruirUrlImagen(Dato.UrlImagenPortadaIzquierdo);
+    Dato.UrlImagenPortadaDerecho = ConstruirUrlImagen(Dato.UrlImagenPortadaDerecho);
+    Dato.UrlImagenVision = ConstruirUrlImagen(Dato.UrlImagenVision);
+    Dato.UrlImagenMision = ConstruirUrlImagen(Dato.UrlImagenMision);
+
+    return Dato;
+  });
+
+  return Resultado;
 };
 
 const ObtenerPorCodigo = async (Codigo) => {
-  return await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
+  const Registro = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
+
+  if (!Registro) return null;
+
+  const Dato = Registro.toJSON();
+
+  Dato.UrlImagenPortada = ConstruirUrlImagen(Dato.UrlImagenPortada);
+  Dato.UrlImagenPortadaIzquierdo = ConstruirUrlImagen(Dato.UrlImagenPortadaIzquierdo);
+  Dato.UrlImagenPortadaDerecho = ConstruirUrlImagen(Dato.UrlImagenPortadaDerecho);
+  Dato.UrlImagenVision = ConstruirUrlImagen(Dato.UrlImagenVision);
+  Dato.UrlImagenMision = ConstruirUrlImagen(Dato.UrlImagenMision);
+
+  return Dato;
 };
+
 
 const Buscar = async (TipoBusqueda, ValorBusqueda) => {
   switch (parseInt(TipoBusqueda)) {

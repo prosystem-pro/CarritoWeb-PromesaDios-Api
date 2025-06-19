@@ -4,6 +4,7 @@ const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/ReporteProducto')(BaseDatos, Sequelize.DataTypes);
 const ModeloProducto = require('../Modelos/Producto')(BaseDatos, Sequelize.DataTypes);
 const ModeloClasificacionProducto = require('../Modelos/ClasificacionProducto')(BaseDatos, Sequelize.DataTypes);
+const { ConstruirUrlImagen } = require('../Utilidades/ConstruirUrlImagen');
 const { DateTime } = require('luxon');
 const { v4: uuidv4 } = require('uuid');
 
@@ -49,27 +50,30 @@ const ObtenerResumen = async (Anio, Mes) => {
     return Acc;
   }, {});
 
-  // Top 3 productos más vendidos
-  const TopCodigos = Object.entries(ConteoPorProducto)
-    .sort(([, A], [, B]) => B - A)
-    .slice(0, 3);
+// Top 3 productos más vendidos
+const TopCodigos = Object.entries(ConteoPorProducto)
+  .sort(([, A], [, B]) => B - A)
+  .slice(0, 3);
 
-  const TopProductos = await Promise.all(
-    TopCodigos.map(async ([CodigoProducto, CantidadVendida]) => {
-      const Producto = await ModeloProducto.findOne({
-        where: { [NombreModelo]: CodigoProducto },
-        attributes: ['NombreProducto', 'UrlImagen'] // incluir Urlimagen aquí
-      });
+const TopProductos = await Promise.all(
+  TopCodigos.map(async ([CodigoProducto, CantidadVendida]) => {
+    const Producto = await ModeloProducto.findOne({
+      where: { [NombreModelo]: CodigoProducto },
+      attributes: ['NombreProducto', 'UrlImagen']
+    });
 
-      return {
-        CodigoProducto: Number(CodigoProducto),
-        NombreProducto: Producto?.dataValues?.NombreProducto || 'Desconocido',
-        UrlImagen: Producto?.dataValues?.UrlImagen || null,
-        CantidadVendida,
-      };
-    })
-  );
+    const NombreProducto = Producto?.dataValues?.NombreProducto || 'Desconocido';
+    const UrlImagenCruda = Producto?.dataValues?.UrlImagen || null;
+    const UrlImagen = ConstruirUrlImagen(UrlImagenCruda);
 
+    return {
+      CodigoProducto: Number(CodigoProducto),
+      NombreProducto,
+      UrlImagen,
+      CantidadVendida,
+    };
+  })
+);
   // Total de solicitudes en el mes 
   const CodigosUnicos = new Set(RegistrosFiltrados.map(r => r.CodigoSolicitud));
   const TotalSolicitudes = CodigosUnicos.size;
