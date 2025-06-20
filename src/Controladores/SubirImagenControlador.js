@@ -1,6 +1,7 @@
 const ManejarError = require('../Utilidades/ErrorControladores');
 const { SubirImagenAlmacenamiento } = require("../Servicios/SubirImagenServicio");
 const { EliminarImagen } = require("../Servicios/EliminarImagenServicio");
+const { ConstruirUrlImagen } = require('../Utilidades/ConstruirUrlImagen');
 
 const Servicios = {
   EmpresaPortada: require("../Servicios/EmpresaPortadaServicio"),
@@ -46,6 +47,29 @@ const SubirImagen = async (req, res) => {
       return res.status(400).json({ Error: `No hay servicio para la carpeta ${SubCarpeta}` });
     }
 
+    // === VERIFICACIÓN DE LÍMITES ===
+    const [archivos] = await Almacenamiento.getFiles({
+      prefix: `${CarpetaPrincipal}/${SubCarpeta}/`
+    });
+
+    // Limite de cantidad
+    if (archivos.length >= 250) {
+      return res.status(400).json({ Error: "Límite de 250 imágenes alcanzado" });
+    }
+
+    // Límite de tamaño en bytes (500MB)
+    let totalBytes = 0;
+    for (const archivo of archivos) {
+      const [metadata] = await archivo.getMetadata();
+      totalBytes += Number(metadata.size || 0);
+    }
+
+    if (totalBytes >= 500 * 1024 * 1024) {
+      return res.status(400).json({ Error: "Límite de espacio (500MB) alcanzado" });
+    }
+
+    // === SUBIDA DE IMAGEN Y ACTUALIZACIÓN ===
+
     let Entidad = {};
     let Datos = {};
 
@@ -81,6 +105,10 @@ const SubirImagen = async (req, res) => {
     } else {
       Datos[NombreCampoImagen] = RutaRelativa;
       Entidad = await Servicio.Crear(Datos);
+    }
+
+    if (Entidad && Entidad[NombreCampoImagen]) {
+      Entidad[NombreCampoImagen] = ConstruirUrlImagen(Entidad[NombreCampoImagen]);
     }
 
     return res.status(201).json({

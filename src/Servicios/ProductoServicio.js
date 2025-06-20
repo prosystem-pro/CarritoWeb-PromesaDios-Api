@@ -33,16 +33,32 @@ const ObtenerPorCodigo = async (Codigo) => {
 };
 
 const Buscar = async (TipoBusqueda, ValorBusqueda) => {
+  let Registros = [];
+
   switch (parseInt(TipoBusqueda)) {
     case 1:
-      return await Modelo.findAll({
-        where: { [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` }, Estatus:  [1,2] }
+      Registros = await Modelo.findAll({
+        where: {
+          [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` },
+          Estatus: [1, 2]
+        }
       });
+      break;
     case 2:
-      return await Modelo.findAll({ where: { Estatus:  [1,2] }, order: [[NombreModelo, 'ASC']] });
+      Registros = await Modelo.findAll({
+        where: { Estatus: [1, 2] },
+        order: [[NombreModelo, 'ASC']]
+      });
+      break;
     default:
       return null;
   }
+
+  return Registros.map(r => {
+    const Dato = r.toJSON();
+    Dato.UrlImagen = ConstruirUrlImagen(Dato.UrlImagen);
+    return Dato;
+  });
 };
 
 const Crear = async (Datos) => {
