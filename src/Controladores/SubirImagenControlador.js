@@ -70,19 +70,27 @@ const SubirImagen = async (req, res) => {
     let CuentaComoNuevaImagen = false;
 
     if (!CodigoPropio && CodigoVinculado) {
-      CuentaComoNuevaImagen = true; // creación con vinculado
+      CuentaComoNuevaImagen = true; // creación vinculada
     } else if (CodigoPropio) {
-      const EntidadExistente = await Servicios[SubCarpeta].ObtenerPorCodigo(CodigoPropio);
-      if (!EntidadExistente || !EntidadExistente[NombreCampoImagen]) {
-        CuentaComoNuevaImagen = true; // edición sin imagen previa
+      const EntidadExistente = await Servicio.ObtenerPorCodigo(CodigoPropio);
+
+      if (!EntidadExistente) {
+        return res.status(400).json({ Alerta: "No se encontró el registro a editar, se alcanzó el límite máximo de imágenes permitidas" });
       }
+
+      const ImagenActual = EntidadExistente[NombreCampoImagen];
+
+      if (!ImagenActual || ImagenActual.trim() === '') {
+        CuentaComoNuevaImagen = true; // edición de registro sin imagen → cuenta como nueva
+      }
+      // Si ya tiene imagen → estás reemplazando, no cuenta como nueva
     } else {
       CuentaComoNuevaImagen = true; // creación sin códigos
     }
 
-    if (CuentaComoNuevaImagen && archivos.length >= 2) { // cambia a 250 en producción
+    if (CuentaComoNuevaImagen && archivos.length >= 2) {
       return res.status(400).json({
-        Alerta: "Se alcanzó el límite máximo de imágenes permitidas (2 imágenes para prueba)."
+        Alerta: "Se alcanzó el límite máximo de imágenes permitidas"
       });
     }
 
@@ -92,7 +100,6 @@ const SubirImagen = async (req, res) => {
         Alerta: "Debes subir una imagen para continuar."
       });
     }
-
     // === SUBIDA DE IMAGEN Y ACTUALIZACIÓN ===
 
     let Entidad = {};
