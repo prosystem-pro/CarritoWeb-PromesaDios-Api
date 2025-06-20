@@ -50,8 +50,9 @@ const SubirImagen = async (req, res) => {
 
     // === VERIFICACIÓN DE ARCHIVOS EXISTENTES ===
     const [archivos] = await Almacenamiento.getFiles({
-      prefix: `${CarpetaPrincipal}/${SubCarpeta}/`
+      prefix: `${CarpetaPrincipal}/`
     });
+
 
     // === VERIFICACIÓN DE ESPACIO (siempre aplica) ===
     let totalBytes = 0;
