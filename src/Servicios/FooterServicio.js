@@ -59,8 +59,9 @@ const Eliminar = async (Codigo) => {
     const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
     if (!Objeto) return null;
 
-    const UrlImagen = Objeto.UrlLogo;
-    await EliminarImagen(UrlImagen);
+    const UrlImagenConstruida = ConstruirUrlImagen(Objeto.UrlLogo);
+    await EliminarImagen(UrlImagenConstruida);
+
     await Objeto.destroy();
 
     return Objeto;
@@ -68,5 +69,6 @@ const Eliminar = async (Codigo) => {
     throw error;
   }
 };
+
 
 module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar };

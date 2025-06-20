@@ -62,8 +62,9 @@ const Eliminar = async (Codigo) => {
     const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
     if (!Objeto) return null;
 
-    const UrlImagen = Objeto.UrlImagen;
-    await EliminarImagen(UrlImagen);
+    const UrlImagenConstruida = ConstruirUrlImagen(Objeto.UrlImagen);
+    await EliminarImagen(UrlImagenConstruida);
+
     await Objeto.destroy();
 
     return Objeto;
@@ -71,6 +72,7 @@ const Eliminar = async (Codigo) => {
     throw error;
   }
 };
+
 
 const ListadoPorCarrusel = async (CodigoCarrusel) => {
   const Registros = await Modelo.findAll({

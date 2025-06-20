@@ -81,10 +81,12 @@ const Eliminar = async (Codigo) => {
       where: { CodigoProducto: Codigo }
     });
 
-    const UrlImagen = Objeto.UrlImagen;
-    if (UrlImagen) {
-      await EliminarImagen(UrlImagen);
+    const UrlImagenOriginal = Objeto.UrlImagen;
+    if (UrlImagenOriginal) {
+      const UrlImagenConstruida = ConstruirUrlImagen(UrlImagenOriginal);
+      await EliminarImagen(UrlImagenConstruida);
     }
+
     await Objeto.destroy();
 
     return Objeto;
@@ -93,6 +95,7 @@ const Eliminar = async (Codigo) => {
     throw error;
   }
 };
+
 
 
 

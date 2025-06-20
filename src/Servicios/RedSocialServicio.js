@@ -9,8 +9,8 @@ const { ConstruirUrlImagen } = require('../Utilidades/ConstruirUrlImagen');
 
 const { Op } = require('sequelize');
 
-const NombreModelo= 'NombreRedSocial';
-const CodigoModelo= 'CodigoRedSocial'
+const NombreModelo = 'NombreRedSocial';
+const CodigoModelo = 'CodigoRedSocial'
 
 const Listado = async (ubicacionFiltro = '') => {
   const Registros = await RedSocial.findAll({
@@ -56,10 +56,10 @@ const Buscar = async (TipoBusqueda, ValorBusqueda) => {
   switch (parseInt(TipoBusqueda)) {
     case 1:
       return await Modelo.findAll({
-        where: { [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` }, Estatus:  [1,2] }
+        where: { [NombreModelo]: { [Sequelize.Op.like]: `%${ValorBusqueda}%` }, Estatus: [1, 2] }
       });
     case 2:
-      return await Modelo.findAll({ where: { Estatus:  [1,2] }, order: [[NombreModelo, 'ASC']] });
+      return await Modelo.findAll({ where: { Estatus: [1, 2] }, order: [[NombreModelo, 'ASC']] });
     default:
       return null;
   }
@@ -119,7 +119,8 @@ const Eliminar = async (Codigo) => {
       for (const imagen of Objeto.Imagenes) {
         try {
           if (imagen.UrlImagen) {
-            await EliminarImagen(imagen.UrlImagen);
+            const urlConstruida = ConstruirUrlImagen(imagen.UrlImagen);
+            await EliminarImagen(urlConstruida);
           }
           await imagen.destroy();
         } catch (err) {
@@ -129,15 +130,19 @@ const Eliminar = async (Codigo) => {
     }
 
     if (Objeto.UrlImagen) {
-      await EliminarImagen(Objeto.UrlImagen);
+      const urlConstruidaPrincipal = ConstruirUrlImagen(Objeto.UrlImagen);
+      await EliminarImagen(urlConstruidaPrincipal);
     }
+
     await Objeto.destroy();
+
     return Objeto;
   } catch (error) {
     console.error('Error en eliminación de red social:', error);
     throw error;
   }
 };
+
 
 
 

@@ -61,9 +61,12 @@ const SubirImagen = async (req, res) => {
       totalBytes += Number(metadata.size || 0);
     }
 
-    if (totalBytes >= 500 * 1024 * 1024) {
+    // totalBytes >= 500 * 1024                  KB
+    // totalBytes >= 500 * 1024 * 1024           MB
+    // totalBytes >= 500 * 1024 * 1024 * 1024    GB
+    if (totalBytes >= 950 * 1024 * 1024) {
       return res.status(400).json({
-        Alerta: "El límite de almacenamiento de 500MB ha sido alcanzado. No se puede subir más imágenes."
+        Alerta: "El límite de almacenamiento ha sido alcanzado. No se puede subir más imágenes."
       });
     }
 
@@ -89,7 +92,7 @@ const SubirImagen = async (req, res) => {
       CuentaComoNuevaImagen = true; // creación sin códigos
     }
 
-    if (CuentaComoNuevaImagen && archivos.length >= 2) {
+    if (CuentaComoNuevaImagen && archivos.length >= 250) {
       return res.status(400).json({
         Alerta: "Se alcanzó el límite máximo de imágenes permitidas"
       });

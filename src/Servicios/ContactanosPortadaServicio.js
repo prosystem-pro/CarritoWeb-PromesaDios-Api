@@ -52,8 +52,9 @@ const Eliminar = async (Codigo) => {
     const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
     if (!Objeto) return null;
 
-    const UrlImagen = Objeto.UrlImagenContactanosPortada;
-    await EliminarImagen(UrlImagen);
+    const UrlImagenConstruida = ConstruirUrlImagen(Objeto.UrlImagenContactanosPortada);
+    await EliminarImagen(UrlImagenConstruida);
+
     await Objeto.destroy();
 
     return Objeto;

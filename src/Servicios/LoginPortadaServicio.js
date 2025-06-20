@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/LoginPortada')(BaseDatos, Sequelize.DataTypes);
 const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
+const { ConstruirUrlImagen } = require('../Utilidades/ConstruirUrlImagen');
 
 const NombreModelo= 'Color';
 const CodigoModelo= 'CodigoLoginPortada'
@@ -50,10 +51,11 @@ const Eliminar = async (Codigo) => {
     ];
 
     for (const campo of CamposImagen) {
-      const url = Objeto[campo];
-      if (url) {
+      const urlOriginal = Objeto[campo];
+      if (urlOriginal) {
+        const urlConstruida = ConstruirUrlImagen(urlOriginal);
         try {
-          await EliminarImagen(url);
+          await EliminarImagen(urlConstruida);
         } catch (error) {
           console.warn(`No se pudo eliminar la imagen del campo "${campo}": ${error.message}`);
         }
@@ -68,6 +70,7 @@ const Eliminar = async (Codigo) => {
     throw error;
   }
 };
+
 
 
 module.exports = { Listado, ObtenerPorCodigo, Buscar, Crear, Editar, Eliminar };

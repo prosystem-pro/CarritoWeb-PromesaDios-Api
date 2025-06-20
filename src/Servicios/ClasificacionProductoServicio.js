@@ -68,14 +68,18 @@ const Eliminar = async (Codigo) => {
       });
 
       if (producto.UrlImagen) {
-        await EliminarImagen(producto.UrlImagen);
+        const ImagenConstruida = ConstruirUrlImagen(producto.UrlImagen);
+        await EliminarImagen(ImagenConstruida);
       }
 
       await producto.destroy();
     }
+
     if (Objeto.UrlImagen) {
-      await EliminarImagen(Objeto.UrlImagen);
+      const ImagenConstruida = ConstruirUrlImagen(Objeto.UrlImagen);
+      await EliminarImagen(ImagenConstruida);
     }
+
     await Objeto.destroy();
 
     return Objeto;

@@ -76,10 +76,11 @@ const Eliminar = async (Codigo) => {
     ];
 
     for (const campo of CamposImagen) {
-      const url = Objeto[campo];
-      if (url) {
+      const urlOriginal = Objeto[campo];
+      if (urlOriginal) {
+        const urlConstruida = ConstruirUrlImagen(urlOriginal);
         try {
-          await EliminarImagen(url);
+          await EliminarImagen(urlConstruida);
         } catch (error) {
           console.warn(`No se pudo eliminar la imagen del campo "${campo}": ${error.message}`);
         }

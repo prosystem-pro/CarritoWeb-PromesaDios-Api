@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const BaseDatos = require('../BaseDatos/ConexionBaseDatos');
 const Modelo = require('../Modelos/LogoImagen')(BaseDatos, Sequelize.DataTypes);
 const { EliminarImagen } = require('../Servicios/EliminarImagenServicio');
+const { ConstruirUrlImagen } = require('../Utilidades/ConstruirUrlImagen');
 
 const NombreModelo= 'CodigoLogo';
 const CodigoModelo= 'CodigoLogoImagen'
@@ -43,8 +44,9 @@ const Eliminar = async (Codigo) => {
     const Objeto = await Modelo.findOne({ where: { [CodigoModelo]: Codigo } });
     if (!Objeto) return null;
 
-    const UrlImagen = Objeto.UrlImagen;
-    await EliminarImagen(UrlImagen);
+    const UrlImagenConstruida = ConstruirUrlImagen(Objeto.UrlImagen);
+    await EliminarImagen(UrlImagenConstruida);
+
     await Objeto.destroy();
 
     return Objeto;
