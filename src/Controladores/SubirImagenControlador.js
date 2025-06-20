@@ -2,6 +2,7 @@ const ManejarError = require('../Utilidades/ErrorControladores');
 const { SubirImagenAlmacenamiento } = require("../Servicios/SubirImagenServicio");
 const { EliminarImagen } = require("../Servicios/EliminarImagenServicio");
 const { ConstruirUrlImagen } = require('../Utilidades/ConstruirUrlImagen');
+const { Almacenamiento } = require("../Configuracion/FirebaseConfiguracion");
 
 const Servicios = {
   EmpresaPortada: require("../Servicios/EmpresaPortadaServicio"),
@@ -47,17 +48,12 @@ const SubirImagen = async (req, res) => {
       return res.status(400).json({ Error: `No hay servicio para la carpeta ${SubCarpeta}` });
     }
 
-    // === VERIFICACIÓN DE LÍMITES ===
+    // === VERIFICACIÓN DE ARCHIVOS EXISTENTES ===
     const [archivos] = await Almacenamiento.getFiles({
       prefix: `${CarpetaPrincipal}/${SubCarpeta}/`
     });
 
-    // Limite de cantidad
-    if (archivos.length >= 250) {
-      return res.status(400).json({ Error: "Límite de 250 imágenes alcanzado" });
-    }
-
-    // Límite de tamaño en bytes (500MB)
+    // === VERIFICACIÓN DE ESPACIO (siempre aplica) ===
     let totalBytes = 0;
     for (const archivo of archivos) {
       const [metadata] = await archivo.getMetadata();
@@ -65,7 +61,36 @@ const SubirImagen = async (req, res) => {
     }
 
     if (totalBytes >= 500 * 1024 * 1024) {
-      return res.status(400).json({ Error: "Límite de espacio (500MB) alcanzado" });
+      return res.status(400).json({
+        Alerta: "El límite de almacenamiento de 500MB ha sido alcanzado. No se puede subir más imágenes."
+      });
+    }
+
+    // === VERIFICACIÓN DE CANTIDAD (solo si agregas nueva imagen) ===
+    let CuentaComoNuevaImagen = false;
+
+    if (!CodigoPropio && CodigoVinculado) {
+      CuentaComoNuevaImagen = true; // creación con vinculado
+    } else if (CodigoPropio) {
+      const EntidadExistente = await Servicios[SubCarpeta].ObtenerPorCodigo(CodigoPropio);
+      if (!EntidadExistente || !EntidadExistente[NombreCampoImagen]) {
+        CuentaComoNuevaImagen = true; // edición sin imagen previa
+      }
+    } else {
+      CuentaComoNuevaImagen = true; // creación sin códigos
+    }
+
+    if (CuentaComoNuevaImagen && archivos.length >= 2) { // cambia a 250 en producción
+      return res.status(400).json({
+        Alerta: "Se alcanzó el límite máximo de imágenes permitidas (2 imágenes para prueba)."
+      });
+    }
+
+    // === VERIFICACIÓN DE ARCHIVO SUBIDO ===
+    if (!req.file) {
+      return res.status(400).json({
+        Alerta: "Debes subir una imagen para continuar."
+      });
     }
 
     // === SUBIDA DE IMAGEN Y ACTUALIZACIÓN ===
