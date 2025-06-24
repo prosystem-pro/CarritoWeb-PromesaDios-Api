@@ -23,22 +23,17 @@ const IniciarSesionServicio = async (NombreUsuario, Clave) => {
     CodigoUsuario: Usuario.CodigoUsuario,
     CodigoRol: Usuario.CodigoRol,
     NombreUsuario: Usuario.NombreUsuario,
-    NombreRol: Usuario.Rol?.NombreRol || null,
-    SuperAdmin: Usuario.SuperAdmin
+    NombreRol: Usuario.Rol?.NombreRol || null,  
+    SuperAdmin: Usuario.SuperAdmin  
   });
   
-  await SesionServicio.Crear({
-    CodigoUsuario: Usuario.CodigoUsuario,
-    UltimaActividad: new Date()
-  });
-
   return {
     Token,
     usuario: {
       CodigoUsuario: Usuario.CodigoUsuario,
       NombreUsuario: Usuario.NombreUsuario,
       CodigoRol: Usuario.CodigoRol,
-      NombreRol: Usuario.Rol?.NombreRol || null
+      NombreRol: Usuario.Rol?.NombreRol || null 
     },
   };
 };

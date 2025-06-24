@@ -32,7 +32,6 @@ var _ReporteTiempoPaginaPortada = require("./ReporteTiempoPaginaPortada");
 var _ReporteVista = require("./ReporteVista");
 var _ReporteVistaPortada = require("./ReporteVistaPortada");
 var _Rol = require("./Rol");
-var _Sesion = require("./Sesion");
 var _Usuario = require("./Usuario");
 
 function initModels(sequelize) {
@@ -69,7 +68,6 @@ function initModels(sequelize) {
   var ReporteVista = _ReporteVista(sequelize, DataTypes);
   var ReporteVistaPortada = _ReporteVistaPortada(sequelize, DataTypes);
   var Rol = _Rol(sequelize, DataTypes);
-  var Sesion = _Sesion(sequelize, DataTypes);
   var Usuario = _Usuario(sequelize, DataTypes);
 
   Usuario.belongsTo(Empresa, { as: "CodigoEmpresa_Empresa", foreignKey: "CodigoEmpresa"});
@@ -118,8 +116,6 @@ function initModels(sequelize) {
   Rol.hasMany(PermisoRolRecurso, { as: "PermisoRolRecursos", foreignKey: "CodigoRol"});
   Usuario.belongsTo(Rol, { as: "CodigoRol_Rol", foreignKey: "CodigoRol"});
   Rol.hasMany(Usuario, { as: "Usuarios", foreignKey: "CodigoRol"});
-  Sesion.belongsTo(Usuario, { as: "CodigoUsuario_Usuario", foreignKey: "CodigoUsuario"});
-  Usuario.hasMany(Sesion, { as: "Sesions", foreignKey: "CodigoUsuario"});
   CarruselImagen.belongsTo(Carrusel, { as: "CodigoCarrusel_Carrusel", foreignKey: "CodigoCarrusel"});
   Carrusel.hasMany(CarruselImagen, { as: "CarruselImagens", foreignKey: "CodigoCarrusel"});
   Producto.belongsTo(ClasificacionProducto, { as: "CodigoClasificacionProducto_ClasificacionProducto", foreignKey: "CodigoClasificacionProducto"});
@@ -169,7 +165,6 @@ function initModels(sequelize) {
     ReporteVista,
     ReporteVistaPortada,
     Rol,
-    Sesion,
     Usuario,
   };
 }
