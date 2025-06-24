@@ -2,9 +2,10 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('Sesion', {
     CodigoSesion: {
+      autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
-      autoIncrement: true
+      primaryKey: true
     },
     CodigoUsuario: {
       type: DataTypes.INTEGER,
@@ -22,6 +23,15 @@ module.exports = function(sequelize, DataTypes) {
     sequelize,
     tableName: 'Sesion',
     schema: 'Ad',
-    timestamps: false
+    timestamps: false,
+    indexes: [
+      {
+        name: "Pk_AdSesion_CodigoSesion",
+        unique: true,
+        fields: [
+          { name: "CodigoSesion" },
+        ]
+      },
+    ]
   });
 };
