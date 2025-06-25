@@ -21,7 +21,8 @@ const SubirImagenAlmacenamiento = (Archivo, CarpetaPrincipal, SubCarpeta) => {
 
     Flujo.on("finish", async () => {
       await ArchivoSubido.makePublic();
-      Resolver(`/${NombreArchivo}`); 
+      // Resolver(`/${NombreArchivo}`); 
+      Resolver(`/${NombreArchivo.replace(`${CarpetaPrincipal}/`, '')}`);
     });
 
     Flujo.end(Archivo.buffer);
